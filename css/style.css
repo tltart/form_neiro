@@ -31,7 +31,8 @@ body {
 }
 
 .like-wrap {
-    border: 2px solid red;
+    margin-top: 20px;
+    margin-left: 20px;
     width: fit-content;
     font-size: 1rem;
     line-height: 1.5rem;
@@ -41,19 +42,134 @@ body {
     color: #222;
     background: #fff;
 }
-
 .like-icon {
-    border: 2px solid blue;
     display: inline-flex;
     cursor: pointer;
+    align-items: center;
+    
 }
-
 .like-icon .icon {
-    /* display: inline-block; */
     width: 2rem;
     height: 2rem;
 }
-
+.like-icon .icon:hover{
+    fill: green;
+}
+.dislike{
+    margin-left: 25px;
+}
+.dislike .icon{
+    width: 2rem;
+    height: 2rem;
+}
+.dislike .icon:hover{
+    fill: red;
+}
 .like-icon span {
-    border: 2px solid chartreuse;
+    margin-left: 15px;
+    display: flex;
+    align-items: flex-end;
+}
+
+
+.show-wrap {
+    border: 1px solid darkgreen;
+    margin-top: 20px;
+    margin-left: 20px;
+    width: fit-content;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-family: 'Raleway', Arial, sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    color: #222;
+    background: #fff;
+}
+.show-icon {
+    display: inline-flex;
+    cursor: pointer;
+    align-items: center;
+    
+}
+.show-icon .icon {
+    width: 2rem;
+    height: 2rem;
+}
+.show-icon span{
+    margin-left: 15px;
+}
+
+
+.form{
+    margin: 10px 10px;
+}
+.form .s-review-title{
+    margin: 10px 5px;
+}
+.form .form-group {
+    margin: 10px 5px;
+    position: relative;
+}
+
+.form-group .icon {
+    width: 2rem;
+    height: 2rem;
+    fill: #222;
+}
+.form-group .form-control {
+    display: block;
+    width: 100%;
+    height: 36px;
+    padding: 10px 12px;
+    font-size: 14px;    
+    line-height: 18px;
+    font-weight: 300;
+    color: #222;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #d1d1d1;
+    border-radius: 5px;
+    -webkit-transition: all .15s ease-in-out;
+         -o-transition: all .15s ease-in-out;
+            transition: all .15s ease-in-out;
+}
+
+.form-group .form-control::-webkit-input-placeholder {
+    color: #888;
+ }
+ .form-group .form-control:-moz-placeholder { 
+    color: #888;  
+ }
+ .form-group .form-control::-moz-placeholder { 
+    color: #888;  
+ }
+ .form-group .form-control:-ms-input-placeholder {  
+    color: #888;  
+ }
+ 
+ .form-group .form-control:focus {
+     color: #000;
+     background-color: #fff;
+     border: 1px solid #d1d1d1;
+     outline: 0;
+ 
+     -webkit-box-shadow: 0 0 21px #ececec;
+             box-shadow: 0 0 21px #ececec;
+ }
+ 
+ 
+ .form-group textarea.form-control {
+     height: auto;
+ }
+ 
+ .form-group .form-control-settings {
+     position: absolute;
+     display: inline-flex;
+     bottom: 8px;
+     right: 22px;
+     z-index: 3;
+ }
+ 
+.form-control-settings .icon{
+    margin-left: 10px;
 }
