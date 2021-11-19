@@ -53,7 +53,7 @@ show.innerHTML = `
     </div>
 `
 form.innerHTML = `
-<form>
+<form class="form-wrapper">
     <div class="form">
         <h3 class="s-review-title">
             Комментарии
@@ -87,52 +87,66 @@ form.innerHTML = `
                     </div>
                 </li>
                 <li class="social-item">
-                    <a href="#" class="social-link social-link_ok" target="_blank" rel="noopener noreferrer" aria-label="Social link">
+                    <div class="social-link">
                         <i class="fab fa-odnoklassniki"></i>
-                    </a>
+                    </div>
                 </li>
                 <li class="social-item">
-                    <a href="#" class="social-link social-link_vk" target="_blank" rel="noopener noreferrer" aria-label="Social link">
+                    <div class="social-link">
                         <i class="fab fa-vk"></i>
-                    </a>
+                    </div>
                 </li>
                 <li class="social-item">
-                    <a href="#" class="social-link social-link_g" target="_blank" rel="noopener noreferrer" aria-label="Social link">
+                    <div class="social-link">
                         <i class="fab fa-google-plus-g"></i>
-                    </a>
+                    </div>
                 </li>
                 <li class="social-item">
-                    <a href="#" class="social-link social-link_yandex" target="_blank" rel="noopener noreferrer" aria-label="Social link">
+                    <div class="social-link">
                         <i class="fab fa-yandex"></i>
-                    </a>
+                    </div>
                 </li>
                                 
             </ul>
         </div>
 
-
-        <div class="col-6 text-right">
-            <div class="entry-label text-left">
-                Или как гость
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    <div class="form-group">
+        <div class="guest-wrap">
+            <div>
+                <div class="entry-label">
+                    Или как гость
+                </div>
+                <div class="f-wrap">
+                    <div class="form-group form-name">
                         <input type="text" name="Name" id="" class="form-control" placeholder="Ваше имя *">
                     </div>
-                </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <input type="text" name="Email" id="" class="form-control" placeholder="Email *">
+                    <div class="form-group form-email">
+                        <input type="text" name="Email" id="" class="form-control" placeholder="Email *">
+                    </div>
                 </div>
             </div>
+            <div class="btn-wrap">
+                <div class="btn btn-primary" id="ncc">
+                    <span>Отправить комментарий</span>
+            </div>
         </div>
-    </div>
-
-    <div class="row justify-content-end">
-        <div class="btn btn-primary" id="ncc">
-            <span>Отправить комментарий</span>
-        </div>
-    </div>
 </form>
+</div>
+<div class="message-wrap">
+    <div class="btn-wrap">
+        <div class="btn btn-outline-secondary">
+            <span>Следующие сообщения</span>
+        </div>
+    </div>
+</div>
+<hr color="#d1d1d1" size="1"/>
+<div class="footer">
+    <div>
+        Политика конфиденциальности
+    </div>
+    <div>
+        <img src="images/logo-neiros.svg" alt="Neiros" width="102" height="25">
+    </div>
+</div>
+
+
 `
