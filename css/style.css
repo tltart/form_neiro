@@ -173,3 +173,13 @@ body {
 .form-control-settings .icon{
     margin-left: 10px;
 }
+.entry-label {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 300;
+    text-transform: uppercase;
+    color: #111;
+    display: block;
+    margin-bottom: 8px;
+    margin-left: 10px;
+}

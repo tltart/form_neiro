@@ -53,6 +53,7 @@ show.innerHTML = `
     </div>
 `
 form.innerHTML = `
+<form>
     <div class="form">
         <h3 class="s-review-title">
             Комментарии
@@ -73,4 +74,65 @@ form.innerHTML = `
         </div>
     </div>
 
+    <div class="entry">
+        <div class="social">
+            <div class="entry-label">
+                Войти через соцсеть
+            </div>
+
+            <ul class="social-list">
+                <li class="social-item">
+                    <div class="social-link">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                </li>
+                <li class="social-item">
+                    <a href="#" class="social-link social-link_ok" target="_blank" rel="noopener noreferrer" aria-label="Social link">
+                        <i class="fab fa-odnoklassniki"></i>
+                    </a>
+                </li>
+                <li class="social-item">
+                    <a href="#" class="social-link social-link_vk" target="_blank" rel="noopener noreferrer" aria-label="Social link">
+                        <i class="fab fa-vk"></i>
+                    </a>
+                </li>
+                <li class="social-item">
+                    <a href="#" class="social-link social-link_g" target="_blank" rel="noopener noreferrer" aria-label="Social link">
+                        <i class="fab fa-google-plus-g"></i>
+                    </a>
+                </li>
+                <li class="social-item">
+                    <a href="#" class="social-link social-link_yandex" target="_blank" rel="noopener noreferrer" aria-label="Social link">
+                        <i class="fab fa-yandex"></i>
+                    </a>
+                </li>
+                                
+            </ul>
+        </div>
+
+
+        <div class="col-6 text-right">
+            <div class="entry-label text-left">
+                Или как гость
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <input type="text" name="Name" id="" class="form-control" placeholder="Ваше имя *">
+                    </div>
+                </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <input type="text" name="Email" id="" class="form-control" placeholder="Email *">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-end">
+        <div class="btn btn-primary" id="ncc">
+            <span>Отправить комментарий</span>
+        </div>
+    </div>
+</form>
 `
