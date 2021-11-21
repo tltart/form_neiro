@@ -68,9 +68,52 @@ const o = {
 };
 
 
+const mm = {
+    comments: 
+    {
+        data: [
+            {
+                id: 1,
+                page_id: 1,
+                text:`kflgkflgПОожыбмжыьмабмьюбмсыздлмыдаьмыамьдыалмьдалмтадмтыадмлkflgkflgkf
+                ПОожыбмжыьмабмьюбм
+                сыздлмыдаьмыамьдыалмьдалмтадмтыадмл`
+            },
+            {
+                id: 2,
+                page_id: 1,
+                text:`Парам-парам-пам`
+            },
+            {
+                id: 3,
+                page_id: 1,
+                text:`Парам-парам-пам`
+            },
+            {
+                id: 4,
+                page_id: 1,
+                text:`Парам-парам-пам`
+            },
+            {
+                id: 5,
+                page_id: 1,
+                text:`Парам-парам-пам`
+            },
+            {
+                id: 6,
+                page_id: 1,
+                text:`Парам-парам-пам`
+            }
+        ]
+
+    }
+}
+
 app.get('/', (req, res) => {
-    console.log(req);
     res.json(o)
+})
+app.get('/m', (req, res) => {
+    res.json(mm)
 })
 
 app.listen(PORT, ()=>{

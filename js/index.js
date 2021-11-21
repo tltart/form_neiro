@@ -2,7 +2,7 @@
 const likeEl = document.getElementById('LikeId');
 const showEl = document.getElementById('ShowId');
 const formEl = document.getElementById('FormId');
-const raitingEl = document.getElementById('RaitiingId');
+const raitingEl = document.getElementById('RaitingId');
 
 
 const like = document.createElement('div');
@@ -14,6 +14,8 @@ show.className = "show-wrap";
 showEl.appendChild(show);
 
 const raiting = document.createElement('div');
+raiting.className = "raiting-wrap";
+raitingEl.appendChild(raiting);
 
 const form = document.createElement('div');
 form.className = "form-wrap";
@@ -22,26 +24,78 @@ formEl.appendChild(form);
 let messageEl;
 let mess;
 
-const messageFromServerEl = document.createElement('div');
-messageFromServerEl.className = "mess-item-wrap";
 
+////// Функция получения сообщений с сервера по клику на кнопку "Следующие сообщения"
+async function getMessage() {
+    let response = await fetch('http://127.0.0.1:3333/m');
+    let result = await response.json();
+    console.log(result.comments.data);
 
+    Array.from(result.comments.data).forEach(el => {
+        let messageParent = document.getElementById("m-w");
+        let messageFromServer = document.createElement('div');
+        messageFromServer.className = "mess-item-wrap";
+        messageFromServer.innerHTML = `
+    <div class="mess-item">
+        <div class="mess-item-icon">
+            <i class="fa fa-user-circle fa-4x" aria-hidden="true"></i>
+            <div class="mess-social-item">
+                <div class="social-link">
+                    <i class="fab fa-odnoklassniki"></i>
+                </div>
+            </div>
+        </div>
+        <div class="data-message-wrap">
+            <div id="name-user">
+                Имя Пользователя
+            <span>2 секунды назад</span>
+            </div>
+            <hr color="#d1d1d1" size="1"/>
+            <div class="break-line" style="width:100%"></div>
+            <div class="mess-body" id="mess-body${el.id}">
+            ${el.text}
+            </div>
+        </div>
+    </div>
+    <div class="reply-message-wrap">
+        <div class="reply-message-icon" id="edit${el.id}" onclick = editMessage(this)>
+            <i class="fa fa-i-cursor" aria-hidden="true"></i>
+            Редактировать
+        </div>
+        <div class="reply-message-icon">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+            Удалить
+        </div>
+        <div class="like-icon like reply-message-icon">
+            <svg class="icon"><use xlink:href="#icon-like"></use></svg>
+            <span id="rm-like">0</span>
+        </div>
+        <div class="like-icon dislike reply-message-icon">
+            <svg class="icon" ><use xlink:href="#icon-dislike"></use></svg>
+            <span id="rm-dislike">0</span>
+        </div>
+    </div>
+    `;
+        messageParent.insertBefore(messageFromServer, messageParent.firstElementChild);
+    })
+}
+
+//// Функция проверки модулей на наличие и присваивание значений
 function initElements(res) {
     document.getElementById("li").innerHTML = `${res.like}`
     document.getElementById("dis").innerHTML = `${res.dislike}`
     document.getElementById("show-data").innerHTML = `${res.views}`
 
-    messageFromServerEl.
 }
 
 // Функция получения данных после полной загрузки страницы
 window.onload = async () => {
     let data = {
-        "widget_id": 10088, /// global.config
+        "widget_id": 10088,     /// global.config
         "page_url": "https://neiros.ru/blog/dialogs/kak-prinimat-pisma-otpravlennye-na-nesushchestvuyushchuyu-pochtu/", // windows.document.location (без параметорв)
-        "metrika_id": "3", /// global.config (от сессии завист и меняется)
-        "neiros_visit": "1", // global.config (уникальный)
-        "page": "1"         // пагинация и просто номер страницы 
+        "metrika_id": "3",      /// global.config (от сессии завист и меняется)
+        "neiros_visit": "1",    // global.config (уникальный)
+        "page": "1"             // пагинация и просто номер страницы 
 
     }
     let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
@@ -55,7 +109,14 @@ window.onload = async () => {
     let result = await response.json();
     console.log(result);
 
+    initElements(result)
+
 }
+
+function editMessage(e) {
+    document.getElementById(`mess-body${e.id.slice(4)}`).setAttribute("contenteditable", "true");
+}
+
 
 like.innerHTML = `
         <div class="like-icon like">
@@ -79,64 +140,30 @@ show.innerHTML = `
 `
 raiting.innerHTML = `
     <div>
-        <div class="show">
-            <div class="show-icon">
-                <svg class="icon"><use xlink:href="#icon-eye"></use></svg>
-                <span id="show-data"></span>
+        <div class="raiting">
+            <div class="raiting-icon">
+                <svg class="icon"><use xlink:href="#icon-star"></use></svg>
+                <span id=""></span>
+            </div>
+            <div class="raiting-icon">
+                <svg class="icon"><use xlink:href="#icon-star"></use></svg>
+                <span id=""></span>
+            </div>
+            <div class="raiting-icon">
+                <svg class="icon"><use xlink:href="#icon-star"></use></svg>
+                <span id=""></span>
+            </div>
+            <div class="raiting-icon">
+                <svg class="icon"><use xlink:href="#icon-star"></use></svg>
+                <span id=""></span>
+            </div>
+            <div class="raiting-icon">
+                <svg class="icon"><use xlink:href="#icon-star"></use></svg>
+                <span id=""></span>
             </div>
         </div>
     </div>
 `
-messageFromServer = `
-<div class="mess-item">
-    <div class="mess-item-icon">
-        <i class="fa fa-user-circle fa-4x" aria-hidden="true"></i>
-        <div class="mess-social-item">
-            <div class="social-link">
-                <i class="fab fa-odnoklassniki"></i>
-            </div>
-        </div>
-    </div>
-    <div class="data-message-wrap">
-        <div id="name-user">
-            Имя Пользователя
-        <span>2 секунды назад</span>
-        </div>
-        <hr color="#d1d1d1" size="1"/>
-        <div class="break-line" style="width:100%"></div>
-        <div id="mess-body">
-            vlskanvlskfvnsl
-            sfvkndfldddddddddddddddddddddddevsvvsssssssssssssssssss
-            ddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-            vfjnfvldddddddddddddddddddddddddddddddddddddddddddddeee3
-            ddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-            vfjnfvldddddddddddddddddddddddddddddddddddddddddddddeee3
-            ddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-            vfjnfvldddddddddddddddddddddddddddddddddddddddddddddeee3
-        </div>
-    </div>
-</div>
-<div class="reply-message-wrap">
-    <div class="reply-message-icon">
-        <i class="fa fa-i-cursor" aria-hidden="true"></i>
-        Редактировать
-    </div>
-    <div class="reply-message-icon">
-        <i class="fa fa-trash" aria-hidden="true"></i>
-        Удалить
-    </div>
-    <div class="like-icon like reply-message-icon">
-        <svg class="icon"><use xlink:href="#icon-like"></use></svg>
-        <span id="rm-like">0</span>
-    </div>
-    <div class="like-icon dislike reply-message-icon">
-        <svg class="icon" ><use xlink:href="#icon-dislike"></use></svg>
-        <span id="rm-dislike">0</span>
-    </div>
-</div>
-`
-
-
 form.innerHTML = `
 <form class="form-wrapper">
     <div class="form">
@@ -205,7 +232,7 @@ form.innerHTML = `
                         <input type="text" name="Name" id="" class="form-control" placeholder="Ваше имя *">
                     </div>
                     <div class="form-group form-email">
-                        <input type="text" name="Email" id="" class="form-control" placeholder="Email *">
+                        <input type="email" name="Email" id="" class="form-control" placeholder="Email *">
                     </div>
                 </div>
             </div>
@@ -219,7 +246,7 @@ form.innerHTML = `
 <div class="message-wrap" id="m-w">
 
     <div class="btn-wrap-next">
-        <div class="btn btn-outline-secondary">
+        <div class="btn btn-outline-secondary" onclick = getMessage()>
             <span>Следующие сообщения</span>
         </div>
     </div>
