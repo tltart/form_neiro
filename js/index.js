@@ -2,6 +2,7 @@
 const likeEl = document.getElementById('LikeId');
 const showEl = document.getElementById('ShowId');
 const formEl = document.getElementById('FormId');
+const raitingEl = document.getElementById('RaitiingId');
 
 
 const like = document.createElement('div');
@@ -12,26 +13,51 @@ const show = document.createElement('div');
 show.className = "show-wrap";
 showEl.appendChild(show);
 
+const raiting = document.createElement('div');
+
 const form = document.createElement('div');
 form.className = "form-wrap";
 formEl.appendChild(form);
 
+let messageEl;
+let mess;
 
-let responseOnLoad;
+const messageFromServerEl = document.createElement('div');
+messageFromServerEl.className = "mess-item-wrap";
+
+
+function initElements(res) {
+    document.getElementById("li").innerHTML = `${res.like}`
+    document.getElementById("dis").innerHTML = `${res.dislike}`
+    document.getElementById("show-data").innerHTML = `${res.views}`
+
+    messageFromServerEl.
+}
 
 // Функция получения данных после полной загрузки страницы
-window.onload = async () =>{
-    let r = await fetch('http://127.0.0.1:3333/')
-    .then(res => res.json());
-    console.log(r);
-    document.getElementById("li").innerHTML = `${r.rates[0]}`
-    document.getElementById("dis").innerHTML = `${r.rates[1]}`
-    document.getElementById("show-data").innerHTML = `${r.views}`
+window.onload = async () => {
+    let data = {
+        "widget_id": 10088, /// global.config
+        "page_url": "https://neiros.ru/blog/dialogs/kak-prinimat-pisma-otpravlennye-na-nesushchestvuyushchuyu-pochtu/", // windows.document.location (без параметорв)
+        "metrika_id": "3", /// global.config (от сессии завист и меняется)
+        "neiros_visit": "1", // global.config (уникальный)
+        "page": "1"         // пагинация и просто номер страницы 
+
+    }
+    let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        cookie: 'XSRF-TOKEN=eyJpdiI6Imh3NGlUZjcvUStIT3J5d252a203TUE9PSIsInZhbHVlIjoiOXRmU01NQ1RPZzlZdzVEZHNNNEtBUEVWZ0RZTWdjbk9jdE1rK3hieUlLd3Fka1oyc1VBYmEvTURiVXEzRERBUDgxSDRwYS9mWXViOHoycXMxTjVka3pzSUE1VHhxSFUxQzdodFFKSVFiTEVBR21LYmdaSUh1RE54L2NwblZ4cUEiLCJtYWMiOiI2ZWY0ZDdkMDY4MWM0YmM1YjRjOTRkMjA5YzU3YzY2NWFkOGE5MTU4ODA1MmI3OTJjYzc1YTY0ODg4YzZlM2JmIn0%253D; neiros_session=eyJpdiI6Im51ODB3cDFSbSs0SFUwQmF2aktnTmc9PSIsInZhbHVlIjoieStyY2plQlJTMnJkaXV1L2ZETHNRajlsZ3A5N085MGVOS2RpcmNNNjNmK3duNEExbTZscjEzK1lCVzFFbHo0WmIrS0VkQlJZTFJ0MGd5clpOVm16QXZhV2NBc0dpM3o2R1FBbjVaNjZCanVYa25taitaQVc4Wi85dGVteHJZUC8iLCJtYWMiOiIwMmU1MGVhMGM0YmNkMzU3ZjY0OGNkNjM0OWE4MzhhNzc1NjlhMzhmODZlMDg5YTY4ZDUzYWRiYmViYTlmMTljIn0%253D',
+        body: JSON.stringify(data)
+    });
+    let result = await response.json();
+    console.log(result);
 
 }
 
 like.innerHTML = `
-    <div>
         <div class="like-icon like">
             <svg class="icon"><use xlink:href="#icon-like"></use></svg>
             <span id="li"></span>
@@ -40,7 +66,6 @@ like.innerHTML = `
             <svg class="icon" ><use xlink:href="#icon-dislike"></use></svg>
             <span id="dis"></span>
         </div>
-    </div>
 `
 show.innerHTML = `
     <div>
@@ -52,6 +77,66 @@ show.innerHTML = `
         </div>
     </div>
 `
+raiting.innerHTML = `
+    <div>
+        <div class="show">
+            <div class="show-icon">
+                <svg class="icon"><use xlink:href="#icon-eye"></use></svg>
+                <span id="show-data"></span>
+            </div>
+        </div>
+    </div>
+`
+messageFromServer = `
+<div class="mess-item">
+    <div class="mess-item-icon">
+        <i class="fa fa-user-circle fa-4x" aria-hidden="true"></i>
+        <div class="mess-social-item">
+            <div class="social-link">
+                <i class="fab fa-odnoklassniki"></i>
+            </div>
+        </div>
+    </div>
+    <div class="data-message-wrap">
+        <div id="name-user">
+            Имя Пользователя
+        <span>2 секунды назад</span>
+        </div>
+        <hr color="#d1d1d1" size="1"/>
+        <div class="break-line" style="width:100%"></div>
+        <div id="mess-body">
+            vlskanvlskfvnsl
+            sfvkndfldddddddddddddddddddddddevsvvsssssssssssssssssss
+            ddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+            vfjnfvldddddddddddddddddddddddddddddddddddddddddddddeee3
+            ddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+            vfjnfvldddddddddddddddddddddddddddddddddddddddddddddeee3
+            ddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+            vfjnfvldddddddddddddddddddddddddddddddddddddddddddddeee3
+        </div>
+    </div>
+</div>
+<div class="reply-message-wrap">
+    <div class="reply-message-icon">
+        <i class="fa fa-i-cursor" aria-hidden="true"></i>
+        Редактировать
+    </div>
+    <div class="reply-message-icon">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+        Удалить
+    </div>
+    <div class="like-icon like reply-message-icon">
+        <svg class="icon"><use xlink:href="#icon-like"></use></svg>
+        <span id="rm-like">0</span>
+    </div>
+    <div class="like-icon dislike reply-message-icon">
+        <svg class="icon" ><use xlink:href="#icon-dislike"></use></svg>
+        <span id="rm-dislike">0</span>
+    </div>
+</div>
+`
+
+
 form.innerHTML = `
 <form class="form-wrapper">
     <div class="form">
@@ -131,14 +216,17 @@ form.innerHTML = `
         </div>
 </form>
 </div>
-<div class="message-wrap">
-    <div class="btn-wrap">
+<div class="message-wrap" id="m-w">
+
+    <div class="btn-wrap-next">
         <div class="btn btn-outline-secondary">
             <span>Следующие сообщения</span>
         </div>
     </div>
 </div>
+
 <hr color="#d1d1d1" size="1"/>
+
 <div class="footer">
     <div>
         Политика конфиденциальности
@@ -147,6 +235,4 @@ form.innerHTML = `
         <img src="images/logo-neiros.svg" alt="Neiros" width="102" height="25">
     </div>
 </div>
-
-
 `
