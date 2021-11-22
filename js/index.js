@@ -14,7 +14,7 @@ show.className = "show-wrap";
 // showEl.appendChild(show);
 
 const raiting = document.createElement('div');
-raiting.className = "raiting-wrap";
+raiting.className = "raiting";
 raitingEl.appendChild(raiting);
 
 const form = document.createElement('div');
@@ -24,6 +24,30 @@ form.className = "form-wrap";
 let messageEl;
 let mess;
 
+
+const raitings = document.querySelectorAll('.raiting');
+
+if (raitings.length > 0){
+    initRaitings();
+}
+
+function initRaitings() {
+    let raitingActive, raitingValue;
+
+    for (let i = 0; i < raitings.length; i++) {
+        const raiting = raitings[i];
+        initRaitinItem(raiting);
+
+    }
+
+    function initRaitinItem(raiting) {
+        
+    }
+
+    function initRaitingVars(raiting) {
+        raitingActive = document.querySelector('.raiting-active')
+    }
+}
 
 ////// Функция получения сообщений с сервера по клику на кнопку "Следующие сообщения"
 async function getMessage() {
@@ -106,8 +130,8 @@ window.onload = async () => {
         cookie: 'XSRF-TOKEN=eyJpdiI6Imh3NGlUZjcvUStIT3J5d252a203TUE9PSIsInZhbHVlIjoiOXRmU01NQ1RPZzlZdzVEZHNNNEtBUEVWZ0RZTWdjbk9jdE1rK3hieUlLd3Fka1oyc1VBYmEvTURiVXEzRERBUDgxSDRwYS9mWXViOHoycXMxTjVka3pzSUE1VHhxSFUxQzdodFFKSVFiTEVBR21LYmdaSUh1RE54L2NwblZ4cUEiLCJtYWMiOiI2ZWY0ZDdkMDY4MWM0YmM1YjRjOTRkMjA5YzU3YzY2NWFkOGE5MTU4ODA1MmI3OTJjYzc1YTY0ODg4YzZlM2JmIn0%253D; neiros_session=eyJpdiI6Im51ODB3cDFSbSs0SFUwQmF2aktnTmc9PSIsInZhbHVlIjoieStyY2plQlJTMnJkaXV1L2ZETHNRajlsZ3A5N085MGVOS2RpcmNNNjNmK3duNEExbTZscjEzK1lCVzFFbHo0WmIrS0VkQlJZTFJ0MGd5clpOVm16QXZhV2NBc0dpM3o2R1FBbjVaNjZCanVYa25taitaQVc4Wi85dGVteHJZUC8iLCJtYWMiOiIwMmU1MGVhMGM0YmNkMzU3ZjY0OGNkNjM0OWE4MzhhNzc1NjlhMzhmODZlMDg5YTY4ZDUzYWRiYmViYTlmMTljIn0%253D',
         body: JSON.stringify(data)
     });
-    let result = await response.json();
-    console.log(result);
+    // let result = await response.json();
+    // console.log(result);
 
     // initElements(result)
 
@@ -139,17 +163,18 @@ show.innerHTML = `
     </div>
 `
 raiting.innerHTML = `
-    <div class="raiting-active">
+    <div class="raiting-body">
+        <div class="raiting-active"></div>
         <div class="raiting-items">
-            <div class="raiting-icon">
-                <svg class="icon" id="raiting_5"><use xlink:href="#icon-star"></use></svg>
-                <span id=""></span>
-            </div>
-            <div class="raiting-icon">
-                <span class="raiting-text"> 4 </span>
-            </div>
+            <input type="radio" class="raiting-item" value="1" name="raiting">
+            <input type="radio" class="raiting-item" value="2" name="raiting">
+            <input type="radio" class="raiting-item" value="3" name="raiting">
+            <input type="radio" class="raiting-item" value="4" name="raiting">
+            <input type="radio" class="raiting-item" value="5" name="raiting">
         </div>
     </div>
+    <div class="raiting-value"> 3.6 </div>
+
 `
 form.innerHTML = `
 <form class="form-wrapper">

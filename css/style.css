@@ -142,24 +142,76 @@ body {
     font-size: 14px;
 }
 
-.raiting-wrap {
+.raiting {
+    border: 2px solid chocolate;
     display: flex;
-}
-.raiting-items{
-    display: ;
-}
-
-.raiting-text{
+    align-items: flex-end;
     font-size: 2em;
+    line-height: 1.1;
+}
+.raiting-body{
+    position: relative;
+    width: 10em;
+    height: 2em;
+    min-width: 10em;
+}
+
+.raiting-items{
+    border: 2px solid blue;
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+.raiting-active{
+    border: 2px solid violet;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    /* overflow: hidden; */
+}
+.raiting-item{
+    flex: 0 0 20%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+}
+
+.raiting-active::before{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' style='stroke: black; fill: none; margin-right: 5px;'%3E%3Cg%3E%3Cpath d='M31.467 13.491l-6.973 6.802 1.653 9.607c0.020 0.132 0.020 0.25 0.020 0.382 0 0.5-0.23 0.961-0.79 0.961-0.27 0-0.54-0.099-0.77-0.23l-8.626-4.537-8.626 4.537c-0.25 0.132-0.5 0.23-0.77 0.23-0.56 0-0.81-0.461-0.81-0.961 0-0.132 0.020-0.25 0.040-0.382l1.653-9.607-6.986-6.802c-0.23-0.25-0.481-0.579-0.481-0.922 0-0.579 0.593-0.803 1.073-0.882l9.639-1.402 4.326-8.737c0.171-0.362 0.5-0.79 0.942-0.79s0.77 0.421 0.942 0.79l4.319 8.737 9.646 1.402c0.461 0.079 1.073 0.309 1.073 0.882 0.007 0.349-0.244 0.672-0.494 0.922z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");    
+    top: 0;
+    left: 0;
+    background-repeat: round;
+}
+.raiting-active::after{
+    margin: 0;
+    padding: 0;
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' style='fill: red; padding-right: 5px; '%3E%3Cg%3E%3Cpath d='M31.467 13.491l-6.973 6.802 1.653 9.607c0.020 0.132 0.020 0.25 0.020 0.382 0 0.5-0.23 0.961-0.79 0.961-0.27 0-0.54-0.099-0.77-0.23l-8.626-4.537-8.626 4.537c-0.25 0.132-0.5 0.23-0.77 0.23-0.56 0-0.81-0.461-0.81-0.961 0-0.132 0.020-0.25 0.040-0.382l1.653-9.607-6.986-6.802c-0.23-0.25-0.481-0.579-0.481-0.922 0-0.579 0.593-0.803 1.073-0.882l9.639-1.402 4.326-8.737c0.171-0.362 0.5-0.79 0.942-0.79s0.77 0.421 0.942 0.79l4.319 8.737 9.646 1.402c0.461 0.079 1.073 0.309 1.073 0.882 0.007 0.349-0.244 0.672-0.494 0.922z'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");    
+    top: 0;
+    left: 0;
+    background-repeat: round;
 }
 
 
 
-.raiting-icon .icon {
-    width: 2rem;
-    height: 2rem;
-    cursor: pointer;
+.raiting-value{
+    margin-left: 10px;
+    font-size: 1em;
 }
+
 
 
 
