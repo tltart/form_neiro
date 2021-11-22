@@ -8,7 +8,7 @@ const raitingEl = document.getElementById('RaitingId');
 
 const like = document.createElement('div');
 like.className = "like-wrap";
-// likeEl.appendChild(like);
+likeEl.appendChild(like);
 
 const show = document.createElement('div');
 show.className = "show-wrap";
@@ -21,7 +21,7 @@ raitingEl.appendChild(raiting);
 
 const form = document.createElement('div');
 form.className = "form-wrap";
-// formEl.appendChild(form);
+formEl.appendChild(form);
 
 let messageEl;
 let mess;
@@ -82,7 +82,7 @@ function initRaiting() {
                 })
                 raitingItem.addEventListener("click", function (e) {
                     initRaitingVars(raiting);
-                    // sendRaitingOnServer(raiting, raitingItem.value);
+                    sendRaitingOnServer(raiting, raitingItem.value);
                     console.log(raiting);
                 })
             }
@@ -144,7 +144,8 @@ async function getMessage() {
     </div>
     <div class="reply-message-wrap">
         <div class="reply-message-icon" id="edit${el.id}" onclick = editMessage(this)>
-            <i class="fa fa-i-cursor" aria-hidden="true"></i>
+            <svg class="icon" ><use xlink:href="#icon-pencil"></use></svg>
+        
             Редактировать
         </div>
         <div class="reply-message-icon">
