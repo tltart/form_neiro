@@ -7,11 +7,11 @@ const raitingEl = document.getElementById('RaitingId');
 
 const like = document.createElement('div');
 like.className = "like-wrap";
-likeEl.appendChild(like);
+// likeEl.appendChild(like);
 
 const show = document.createElement('div');
 show.className = "show-wrap";
-showEl.appendChild(show);
+// showEl.appendChild(show);
 
 const raiting = document.createElement('div');
 raiting.className = "raiting-wrap";
@@ -19,7 +19,7 @@ raitingEl.appendChild(raiting);
 
 const form = document.createElement('div');
 form.className = "form-wrap";
-formEl.appendChild(form);
+// formEl.appendChild(form);
 
 let messageEl;
 let mess;
@@ -109,7 +109,7 @@ window.onload = async () => {
     let result = await response.json();
     console.log(result);
 
-    initElements(result)
+    // initElements(result)
 
 }
 
@@ -139,27 +139,14 @@ show.innerHTML = `
     </div>
 `
 raiting.innerHTML = `
-    <div>
-        <div class="raiting">
+    <div class="raiting-active">
+        <div class="raiting-items">
             <div class="raiting-icon">
-                <svg class="icon"><use xlink:href="#icon-star"></use></svg>
+                <svg class="icon" id="raiting_5"><use xlink:href="#icon-star"></use></svg>
                 <span id=""></span>
             </div>
             <div class="raiting-icon">
-                <svg class="icon"><use xlink:href="#icon-star"></use></svg>
-                <span id=""></span>
-            </div>
-            <div class="raiting-icon">
-                <svg class="icon"><use xlink:href="#icon-star"></use></svg>
-                <span id=""></span>
-            </div>
-            <div class="raiting-icon">
-                <svg class="icon"><use xlink:href="#icon-star"></use></svg>
-                <span id=""></span>
-            </div>
-            <div class="raiting-icon">
-                <svg class="icon"><use xlink:href="#icon-star"></use></svg>
-                <span id=""></span>
+                <span class="raiting-text"> 4 </span>
             </div>
         </div>
     </div>
