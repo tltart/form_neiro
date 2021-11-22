@@ -1,3 +1,4 @@
+const Cookie = 'XSRF-TOKEN=eyJpdiI6Imh3NGlUZjcvUStIT3J5d252a203TUE9PSIsInZhbHVlIjoiOXRmU01NQ1RPZzlZdzVEZHNNNEtBUEVWZ0RZTWdjbk9jdE1rK3hieUlLd3Fka1oyc1VBYmEvTURiVXEzRERBUDgxSDRwYS9mWXViOHoycXMxTjVka3pzSUE1VHhxSFUxQzdodFFKSVFiTEVBR21LYmdaSUh1RE54L2NwblZ4cUEiLCJtYWMiOiI2ZWY0ZDdkMDY4MWM0YmM1YjRjOTRkMjA5YzU3YzY2NWFkOGE5MTU4ODA1MmI3OTJjYzc1YTY0ODg4YzZlM2JmIn0%253D; neiros_session=eyJpdiI6Im51ODB3cDFSbSs0SFUwQmF2aktnTmc9PSIsInZhbHVlIjoieStyY2plQlJTMnJkaXV1L2ZETHNRajlsZ3A5N085MGVOS2RpcmNNNjNmK3duNEExbTZscjEzK1lCVzFFbHo0WmIrS0VkQlJZTFJ0MGd5clpOVm16QXZhV2NBc0dpM3o2R1FBbjVaNjZCanVYa25taitaQVc4Wi85dGVteHJZUC8iLCJtYWMiOiIwMmU1MGVhMGM0YmNkMzU3ZjY0OGNkNjM0OWE4MzhhNzc1NjlhMzhmODZlMDg5YTY4ZDUzYWRiYmViYTlmMTljIn0%253D';
 
 const likeEl = document.getElementById('LikeId');
 const showEl = document.getElementById('ShowId');
@@ -15,6 +16,7 @@ show.className = "show-wrap";
 
 const raiting = document.createElement('div');
 raiting.className = "raiting";
+raiting.classList.add("rating-set");
 raitingEl.appendChild(raiting);
 
 const form = document.createElement('div');
@@ -27,25 +29,84 @@ let mess;
 
 const raitings = document.querySelectorAll('.raiting');
 
-if (raitings.length > 0){
-    initRaitings();
-}
+function initRaiting() {
 
-function initRaitings() {
-    let raitingActive, raitingValue;
 
-    for (let i = 0; i < raitings.length; i++) {
-        const raiting = raitings[i];
-        initRaitinItem(raiting);
-
+    if (raitings.length > 0) {
+        initRaitings();
     }
 
-    function initRaitinItem(raiting) {
+    function initRaitings() {
+        let raitingActive, raitingValue;
+
+        for (let i = 0; i < raitings.length; i++) {
+            const raiting = raitings[i];
+
+            initRaitingItem(raiting);
+
+
+        }
+
+        function initRaitingItem(raiting) {
+            initRaitingVars(raiting);
+
+            setRaitingActiveWidth();
+
+
+            if (raiting.classList.contains('rating-set')){
+                setRaiting(raiting)
+            }
+        }
+
+
+        function initRaitingVars(raiting) {
+            raitingActive = raiting.querySelector('.raiting-active');
+            raitingValue = raiting.querySelector('.raiting-value');
+        }
+        function setRaitingActiveWidth(index = raitingValue.innerHTML) {
+            const raitingActiveWidth = index / 0.05;
+            raitingActive.style.width = `${raitingActiveWidth}%`
+        }
+
+        function setRaiting(raiting){
+            const raitingItems = raiting.querySelectorAll('.raiting-item');
+            for (let i = 0; i < raitingItems.length; i++) {
+                const raitingItem = raitingItems[i];
+                
+                raitingItem.addEventListener("mouseenter", function (e) {
+                    initRaitingVars(raiting);
+                    setRaitingActiveWidth(raitingItem.value);
+                })
+                raitingItem.addEventListener("mouseleave", function (e) {
+                    setRaitingActiveWidth();
+                })
+                raitingItem.addEventListener("click", function (e) {
+                    initRaitingVars(raiting);
+                    // sendRaitingOnServer(raiting, raitingItem.value);
+                    console.log(raiting);
+                })
+            }
+        }
+        async function sendRaitingOnServer(raiting, value){
+            let data = {
+                "widget_id": 10088,     /// global.config
+                "page_url": "https://neiros.ru/blog/dialogs/kak-prinimat-pisma-otpravlennye-na-nesushchestvuyushchuyu-pochtu/", // windows.document.location (без параметорв)
+                "metrika_id": "3",      /// global.config (от сессии завист и меняется)
+                "neiros_visit": "1",    // global.config (уникальный)
+                "page": "1",            // пагинация и просто номер страницы
+                "raiting":raiting,
+                 
         
-    }
-
-    function initRaitingVars(raiting) {
-        raitingActive = document.querySelector('.raiting-active')
+            }
+            let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                cookie: Cookie,
+                body: JSON.stringify(data)
+            });
+        }
     }
 }
 
@@ -122,19 +183,19 @@ window.onload = async () => {
         "page": "1"             // пагинация и просто номер страницы 
 
     }
-    let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        cookie: 'XSRF-TOKEN=eyJpdiI6Imh3NGlUZjcvUStIT3J5d252a203TUE9PSIsInZhbHVlIjoiOXRmU01NQ1RPZzlZdzVEZHNNNEtBUEVWZ0RZTWdjbk9jdE1rK3hieUlLd3Fka1oyc1VBYmEvTURiVXEzRERBUDgxSDRwYS9mWXViOHoycXMxTjVka3pzSUE1VHhxSFUxQzdodFFKSVFiTEVBR21LYmdaSUh1RE54L2NwblZ4cUEiLCJtYWMiOiI2ZWY0ZDdkMDY4MWM0YmM1YjRjOTRkMjA5YzU3YzY2NWFkOGE5MTU4ODA1MmI3OTJjYzc1YTY0ODg4YzZlM2JmIn0%253D; neiros_session=eyJpdiI6Im51ODB3cDFSbSs0SFUwQmF2aktnTmc9PSIsInZhbHVlIjoieStyY2plQlJTMnJkaXV1L2ZETHNRajlsZ3A5N085MGVOS2RpcmNNNjNmK3duNEExbTZscjEzK1lCVzFFbHo0WmIrS0VkQlJZTFJ0MGd5clpOVm16QXZhV2NBc0dpM3o2R1FBbjVaNjZCanVYa25taitaQVc4Wi85dGVteHJZUC8iLCJtYWMiOiIwMmU1MGVhMGM0YmNkMzU3ZjY0OGNkNjM0OWE4MzhhNzc1NjlhMzhmODZlMDg5YTY4ZDUzYWRiYmViYTlmMTljIn0%253D',
-        body: JSON.stringify(data)
-    });
+    // let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     cookie: Cookie,
+    //     body: JSON.stringify(data)
+    // });
     // let result = await response.json();
     // console.log(result);
 
     // initElements(result)
-
+    initRaiting();
 }
 
 function editMessage(e) {
@@ -173,7 +234,7 @@ raiting.innerHTML = `
             <input type="radio" class="raiting-item" value="5" name="raiting">
         </div>
     </div>
-    <div class="raiting-value"> 3.6 </div>
+    <div class="raiting-value"> 1.6 </div>
 
 `
 form.innerHTML = `
