@@ -1,63 +1,64 @@
 const Cookie = 'XSRF-TOKEN=eyJpdiI6Imh3NGlUZjcvUStIT3J5d252a203TUE9PSIsInZhbHVlIjoiOXRmU01NQ1RPZzlZdzVEZHNNNEtBUEVWZ0RZTWdjbk9jdE1rK3hieUlLd3Fka1oyc1VBYmEvTURiVXEzRERBUDgxSDRwYS9mWXViOHoycXMxTjVka3pzSUE1VHhxSFUxQzdodFFKSVFiTEVBR21LYmdaSUh1RE54L2NwblZ4cUEiLCJtYWMiOiI2ZWY0ZDdkMDY4MWM0YmM1YjRjOTRkMjA5YzU3YzY2NWFkOGE5MTU4ODA1MmI3OTJjYzc1YTY0ODg4YzZlM2JmIn0%253D; neiros_session=eyJpdiI6Im51ODB3cDFSbSs0SFUwQmF2aktnTmc9PSIsInZhbHVlIjoieStyY2plQlJTMnJkaXV1L2ZETHNRajlsZ3A5N085MGVOS2RpcmNNNjNmK3duNEExbTZscjEzK1lCVzFFbHo0WmIrS0VkQlJZTFJ0MGd5clpOVm16QXZhV2NBc0dpM3o2R1FBbjVaNjZCanVYa25taitaQVc4Wi85dGVteHJZUC8iLCJtYWMiOiIwMmU1MGVhMGM0YmNkMzU3ZjY0OGNkNjM0OWE4MzhhNzc1NjlhMzhmODZlMDg5YTY4ZDUzYWRiYmViYTlmMTljIn0%253D';
 
-const likeEl = document.getElementById('LikeId');
-const showEl = document.getElementById('ShowId');
-const formEl = document.getElementById('FormId');
-const raitingEl = document.getElementById('RaitingId');
+const likeEl = document.getElementById('LikeId');           // Ищем элемент чтобы вставить лайки
+const like = document.createElement('div');                 // 
+like.className = "like-wrap";                               //
+likeEl.appendChild(like);                                   //
 
+const showEl = document.getElementById('ShowId');           // Ищем название элемента чтобы вставить просмотры
+const show = document.createElement('div');                 //
+show.className = "show-wrap";                               //
+showEl.appendChild(show);                                   //
 
-const like = document.createElement('div');
-like.className = "like-wrap";
-likeEl.appendChild(like);
+const raitingEl = document.getElementById('RaitingId');     // Ищем название элемента чтобы вставить рейтинг
+const raiting = document.createElement('div');              //
+raiting.className = "raiting";                              //
+raiting.classList.add("rating-set");                        //
+raitingEl.appendChild(raiting);                             //
+const raitings = document.querySelectorAll('.raiting');     //
 
-const show = document.createElement('div');
-show.className = "show-wrap";
-showEl.appendChild(show);
-
-const raiting = document.createElement('div');
-raiting.className = "raiting";
-raiting.classList.add("rating-set");
-raitingEl.appendChild(raiting);
-
-const form = document.createElement('div');
-form.className = "form-wrap";
-formEl.appendChild(form);
+const formEl = document.getElementById('FormId');           // Ищем Id для вставки в этот родитель форму
+const form = document.createElement('div');                 //
+form.className = "form-wrap";                               //
+formEl.appendChild(form);                                   //
 
 let messageEl;
 let mess;
 
 
-const raitings = document.querySelectorAll('.raiting');
-
+// Инициализация рейтинга
 function initRaiting(raitingServ) {
-
+    // Проверим есть ли на странице рейтинги
     if (raitings.length) {
         initRaitings();
     }
+    // Установка рейтингов
     function initRaitings() {
-        let raitingActive , raitingValue;
+        let raitingActive, raitingValue;
 
         for (let i = 0; i < raitings.length; i++) {
             const raiting = raitings[i];
             firstInit(raiting, raitingServ);
             initRaitingItem(raiting);
         }
-    function firstInit(raiting, raitingServ){
-        initRaitingVars(raiting, raitingServ);
-    }
+        // Инициализация рейтинга при загрузке страницы
+        function firstInit(raiting, raitingServ) {
+            initRaitingVars(raiting, raitingServ);
+        }
 
+        // Инициализация рейтинга в процессе работы и их изменении
         function initRaitingItem(raiting) {
             initRaitingVars(raiting);
             setRaitingActiveWidth(raitingServ);
-            if (raiting.classList.contains('rating-set')){
+            if (raiting.classList.contains('rating-set')) {
                 setRaiting(raiting)
             }
         }
-        function initRaitingVars(raiting, first=null) {
+        // Установка значений рейтинга
+        function initRaitingVars(raiting, first = 0) {
             raitingActive = raiting.querySelector('.raiting-active');
             raitingValue = raiting.querySelector('.raiting-value');
-
-            if (first){
+            if (first) {
                 console.log(first);
                 raitingValue.innerHTML = first;
             }
@@ -66,34 +67,41 @@ function initRaiting(raitingServ) {
             const raitingActiveWidth = index / 0.05;
             raitingActive.style.width = `${raitingActiveWidth}%`
         }
-        function setRaiting(raiting){
+        // Установка рейтинга при срабатывании слушателей (наведение, клик)
+        function setRaiting(raiting) {
+
+            function mouseEnter(e) {
+                initRaitingVars(this.raiting);
+                setRaitingActiveWidth(this.value);
+            }
+            function mouseLeave(e) {
+                initRaitingVars(this.raiting);
+                setRaitingActiveWidth();
+            }
+            function sendServer(e) {
+                raiting.classList.add('pending');
+                raiting.classList.remove("rating-set");
+                sendRaitingOnServer(this.raiting, this.value);
+            }
             const raitingItems = raiting.querySelectorAll('.raiting-item');
             for (let i = 0; i < raitingItems.length; i++) {
                 const raitingItem = raitingItems[i];
-                
-                raitingItem.addEventListener("mouseenter", function (e) {
-                    initRaitingVars(raiting, raitingItem.value);
-                    setRaitingActiveWidth(raitingItem.value);
-                })
-                raitingItem.addEventListener("mouseleave", function (e) {
-                    initRaitingVars(raiting, raitingServ)
-                    setRaitingActiveWidth();
-                })
-                raitingItem.addEventListener("click", function (e) {
-                    raiting.classList.add('pending')
-                    sendRaitingOnServer(raiting, raitingItem.value);
-                    
-                })
+                if (raiting.classList.contains("rating-set")) {
+                    raitingItem.addEventListener("mouseenter", { handleEvent: mouseEnter, raiting, value: raitingItem.value });
+                    raitingItem.addEventListener("mouseleave", { handleEvent: mouseLeave, raiting });
+                    raitingItem.addEventListener("click", { handleEvent: sendServer, raiting, value: raitingItem.value });
+                }
             }
         }
-        async function sendRaitingOnServer(raiting, value){
+        // Отправка рейтинга на сервер, получение и установка на стороне клиента
+        async function sendRaitingOnServer(raiting, value) {
             let data = {
                 "widget_id": 10088,     /// global.config
                 "page_url": window.location.href, // windows.document.location (без параметорв)
                 "metrika_id": "3",      /// global.config (от сессии завист и меняется)
                 "neiros_visit": "1",    // global.config (уникальный)
                 "page": "1",            // пагинация и просто номер страницы
-                "raiting":{raiting, value}        
+                "raiting": { raiting, value }
             }
             // let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
             let response = await fetch('http://127.0.0.1:3333/sendRaiting', {
@@ -104,16 +112,20 @@ function initRaiting(raitingServ) {
                 cookie: Cookie,
                 body: JSON.stringify(data)
             });
-            
 
-            if(response.ok){
-                // initRaiting(res.rating);
+            if (response.ok) {
                 let res = await response.json();
-                raitingValue.innerHTML = res.rating;
-                setRaitingActiveWidth();
+                // raitingValue.innerHTML = res.rating;
+                // setRaitingActiveWidth();
                 raiting.classList.remove('pending');
+                raiting.classList.remove('rating-set');                                        // Если не удалять этот класс, то рейтинг можно отправить снова
+                let rr = raiting.querySelectorAll('.raiting-item');
+                rr.forEach(el => el.style.cursor = 'auto');                                    // Удаляем указатель 
+
+                initRaiting(res.rating)
+
             }
-            
+
         }
     }
 }
@@ -199,7 +211,6 @@ window.onload = async () => {
         body: JSON.stringify(data)
     });
     let result = await response.json();
-    console.log(result);
     initElements(result)
     initRaiting(result.rating);
 }

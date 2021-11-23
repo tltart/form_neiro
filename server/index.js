@@ -118,6 +118,7 @@ const info = {
         page_id: 4,
         rating: 4,
         views: 1,
+        total_rating: 0
 }
 
 app.get('/', (req, res) => {
@@ -131,7 +132,9 @@ app.post('/getinfo', (req, res) => {
     })
 app.post('/sendRaiting', (req, res) => {
         // console.log(req.body.raiting.value);
-        info.rating = req.body.raiting.value;
+        info.views += 1;
+        info.total_rating = info.total_rating + Number(req.body.raiting.value)
+        info.rating = info.total_rating / info.views;
         console.log(info);
         res.json(info);
     })
