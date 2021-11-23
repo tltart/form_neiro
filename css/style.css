@@ -147,7 +147,13 @@ body {
     align-items: flex-end;
     font-size: 2em;
     line-height: 0.7;
+    transition: opacity 0.3s ease 0s;
 }
+.rating.pending{
+    opacity: 0.2;
+}
+
+
 .raiting-body{
     /* border: 2px solid green; */
     position: relative;
@@ -162,7 +168,7 @@ body {
 .raiting-active{
     /* border: 2px solid violet; */
     position: absolute;
-    width: 30%;
+    width: 0%;
     height: 100%;
     top: 0;
     left: 0;
@@ -545,6 +551,10 @@ ul li:not(:first-child) {
 }
 .reply-message-icon{
     cursor: pointer;
+}
+.reply-message-icon .icon {
+    width: 1rem;
+    height: 1rem;
 }
 .reply-message-icon:not(:first-child){
     margin-left: 3em;

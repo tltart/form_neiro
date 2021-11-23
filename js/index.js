@@ -12,7 +12,7 @@ likeEl.appendChild(like);
 
 const show = document.createElement('div');
 show.className = "show-wrap";
-// showEl.appendChild(show);
+showEl.appendChild(show);
 
 const raiting = document.createElement('div');
 raiting.className = "raiting";
@@ -29,76 +29,74 @@ let mess;
 
 const raitings = document.querySelectorAll('.raiting');
 
-function initRaiting() {
+function initRaiting(raitingServ) {
 
-
-    if (raitings.length > 0) {
+    if (raitings.length) {
         initRaitings();
     }
-
     function initRaitings() {
-        let raitingActive, raitingValue;
+        let raitingActive , raitingValue;
 
         for (let i = 0; i < raitings.length; i++) {
             const raiting = raitings[i];
-
+            firstInit(raiting, raitingServ);
             initRaitingItem(raiting);
-
-
         }
+    function firstInit(raiting, raitingServ){
+        initRaitingVars(raiting, raitingServ);
+    }
 
         function initRaitingItem(raiting) {
             initRaitingVars(raiting);
-
-            setRaitingActiveWidth();
-
-
+            setRaitingActiveWidth(raitingServ);
             if (raiting.classList.contains('rating-set')){
                 setRaiting(raiting)
             }
         }
-
-
-        function initRaitingVars(raiting) {
+        function initRaitingVars(raiting, first=null) {
             raitingActive = raiting.querySelector('.raiting-active');
             raitingValue = raiting.querySelector('.raiting-value');
+
+            if (first){
+                console.log(first);
+                raitingValue.innerHTML = first;
+            }
         }
         function setRaitingActiveWidth(index = raitingValue.innerHTML) {
             const raitingActiveWidth = index / 0.05;
             raitingActive.style.width = `${raitingActiveWidth}%`
         }
-
         function setRaiting(raiting){
             const raitingItems = raiting.querySelectorAll('.raiting-item');
             for (let i = 0; i < raitingItems.length; i++) {
                 const raitingItem = raitingItems[i];
                 
                 raitingItem.addEventListener("mouseenter", function (e) {
-                    initRaitingVars(raiting);
+                    initRaitingVars(raiting, raitingItem.value);
                     setRaitingActiveWidth(raitingItem.value);
                 })
                 raitingItem.addEventListener("mouseleave", function (e) {
+                    initRaitingVars(raiting, raitingServ)
                     setRaitingActiveWidth();
                 })
                 raitingItem.addEventListener("click", function (e) {
-                    initRaitingVars(raiting);
+                    raiting.classList.add('pending')
                     sendRaitingOnServer(raiting, raitingItem.value);
-                    console.log(raiting);
+                    
                 })
             }
         }
         async function sendRaitingOnServer(raiting, value){
             let data = {
                 "widget_id": 10088,     /// global.config
-                "page_url": "https://neiros.ru/blog/dialogs/kak-prinimat-pisma-otpravlennye-na-nesushchestvuyushchuyu-pochtu/", // windows.document.location (без параметорв)
+                "page_url": window.location.href, // windows.document.location (без параметорв)
                 "metrika_id": "3",      /// global.config (от сессии завист и меняется)
                 "neiros_visit": "1",    // global.config (уникальный)
                 "page": "1",            // пагинация и просто номер страницы
-                "raiting":raiting,
-                 
-        
+                "raiting":{raiting, value}        
             }
-            let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
+            // let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
+            let response = await fetch('http://127.0.0.1:3333/sendRaiting', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -106,6 +104,16 @@ function initRaiting() {
                 cookie: Cookie,
                 body: JSON.stringify(data)
             });
+            
+
+            if(response.ok){
+                // initRaiting(res.rating);
+                let res = await response.json();
+                raitingValue.innerHTML = res.rating;
+                setRaitingActiveWidth();
+                raiting.classList.remove('pending');
+            }
+            
         }
     }
 }
@@ -145,7 +153,6 @@ async function getMessage() {
     <div class="reply-message-wrap">
         <div class="reply-message-icon" id="edit${el.id}" onclick = editMessage(this)>
             <svg class="icon" ><use xlink:href="#icon-pencil"></use></svg>
-        
             Редактировать
         </div>
         <div class="reply-message-icon">
@@ -168,35 +175,33 @@ async function getMessage() {
 
 //// Функция проверки модулей на наличие и присваивание значений
 function initElements(res) {
-    document.getElementById("li").innerHTML = `${res.like}`
-    document.getElementById("dis").innerHTML = `${res.dislike}`
-    document.getElementById("show-data").innerHTML = `${res.views}`
-
+    document.getElementById("li").innerHTML = `${res.like}`;
+    document.getElementById("dis").innerHTML = `${res.dislike}`;
+    document.getElementById("show-data").innerHTML = `${res.views}`;
 }
 
 // Функция получения данных после полной загрузки страницы
 window.onload = async () => {
     let data = {
-        "widget_id": 10088,     /// global.config
-        "page_url": "https://neiros.ru/blog/dialogs/kak-prinimat-pisma-otpravlennye-na-nesushchestvuyushchuyu-pochtu/", // windows.document.location (без параметорв)
-        "metrika_id": "3",      /// global.config (от сессии завист и меняется)
-        "neiros_visit": "1",    // global.config (уникальный)
-        "page": "1"             // пагинация и просто номер страницы 
-
+        "widget_id": 10088,                 /// global.config
+        "page_url": window.location.href,   // windows.document.location (без параметорв)
+        "metrika_id": "3",                  /// global.config (от сессии завист и меняется)
+        "neiros_visit": "1",                // global.config (уникальный)
+        "page": "1"                         // пагинация и просто номер страницы 
     }
     // let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     cookie: Cookie,
-    //     body: JSON.stringify(data)
-    // });
-    // let result = await response.json();
-    // console.log(result);
-
-    // initElements(result)
-    initRaiting();
+    let response = await fetch('http://127.0.0.1:3333/getinfo', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        cookie: Cookie,
+        body: JSON.stringify(data)
+    });
+    let result = await response.json();
+    console.log(result);
+    initElements(result)
+    initRaiting(result.rating);
 }
 
 function editMessage(e) {
@@ -235,7 +240,7 @@ raiting.innerHTML = `
             <input type="radio" class="raiting-item" value="5" name="raiting">
         </div>
     </div>
-    <div class="raiting-value"> 1.6 </div>
+    <div class="raiting-value"> 0 </div>
 
 `
 form.innerHTML = `
