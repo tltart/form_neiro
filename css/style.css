@@ -288,6 +288,7 @@ body {
 .form-group textarea {
     font-family: 'Roboto', Arial, sans-serif;
     font-size: 12px;
+    resize: vertical;
 }
 
 .form-group textarea.form-control {
@@ -308,9 +309,10 @@ body {
 
 .entry {
     display: flex;
+    width: 100%;
     flex-wrap: wrap;
     justify-content: space-between;
-    margin: 10px 15px;
+    padding-left: 10px;
 }
 
 .entry-label {

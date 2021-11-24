@@ -1,36 +1,123 @@
 const Cookie = 'XSRF-TOKEN=eyJpdiI6Imh3NGlUZjcvUStIT3J5d252a203TUE9PSIsInZhbHVlIjoiOXRmU01NQ1RPZzlZdzVEZHNNNEtBUEVWZ0RZTWdjbk9jdE1rK3hieUlLd3Fka1oyc1VBYmEvTURiVXEzRERBUDgxSDRwYS9mWXViOHoycXMxTjVka3pzSUE1VHhxSFUxQzdodFFKSVFiTEVBR21LYmdaSUh1RE54L2NwblZ4cUEiLCJtYWMiOiI2ZWY0ZDdkMDY4MWM0YmM1YjRjOTRkMjA5YzU3YzY2NWFkOGE5MTU4ODA1MmI3OTJjYzc1YTY0ODg4YzZlM2JmIn0%253D; neiros_session=eyJpdiI6Im51ODB3cDFSbSs0SFUwQmF2aktnTmc9PSIsInZhbHVlIjoieStyY2plQlJTMnJkaXV1L2ZETHNRajlsZ3A5N085MGVOS2RpcmNNNjNmK3duNEExbTZscjEzK1lCVzFFbHo0WmIrS0VkQlJZTFJ0MGd5clpOVm16QXZhV2NBc0dpM3o2R1FBbjVaNjZCanVYa25taitaQVc4Wi85dGVteHJZUC8iLCJtYWMiOiIwMmU1MGVhMGM0YmNkMzU3ZjY0OGNkNjM0OWE4MzhhNzc1NjlhMzhmODZlMDg5YTY4ZDUzYWRiYmViYTlmMTljIn0%253D';
 
-const likeEl = document.getElementById('LikeId');           // Ищем элемент чтобы вставить лайки
-const like = document.createElement('div');                 // 
-like.className = "like-wrap";                               //
-likeEl.appendChild(like);                                   //
+if (document.getElementById('LikeId')) {
+    const likeEl = document.getElementById('LikeId');           // Ищем элемент чтобы вставить лайки
+    const like = document.createElement('div');
+    like.className = "like-wrap";
+    likeEl.appendChild(like);
+    likeHtml(like);
+}
 
-const showEl = document.getElementById('ShowId');           // Ищем название элемента чтобы вставить просмотры
-const show = document.createElement('div');                 //
-show.className = "show-wrap";                               //
-showEl.appendChild(show);                                   //
 
-const raitingEl = document.getElementById('RaitingId');     // Ищем название элемента чтобы вставить рейтинг
-const raiting = document.createElement('div');              //
-raiting.className = "raiting";                              //
-raiting.classList.add("rating-set");                        //
-raitingEl.appendChild(raiting);                             //
-const raitings = document.querySelectorAll('.raiting');     //
+if (document.getElementById('ShowId')) {
+    const showEl = document.getElementById('ShowId');           // Ищем название элемента чтобы вставить просмотры
+    const show = document.createElement('div');
+    show.className = "show-wrap";
+    showEl.appendChild(show);
+    showHtml(show);
+}
 
-const formEl = document.getElementById('FormId');           // Ищем Id для вставки в этот родитель форму
-const form = document.createElement('div');                 //
-form.className = "form-wrap";                               //
-formEl.appendChild(form);                                   //
 
+let raitings;
+if (document.getElementById('RaitingId')) {
+    const raitingEl = document.getElementById('RaitingId');     // Ищем название элемента чтобы вставить рейтинг
+    const raiting = document.createElement('div');
+    raiting.className = "raiting";
+    raiting.classList.add("rating-set");
+    raitingEl.appendChild(raiting);
+    raitings = document.querySelectorAll('.raiting');
+    raitingHtml(raiting);
+}
+
+
+
+if (document.getElementById('FormId')) {
+    const formEl = document.getElementById('FormId');
+    const form = document.createElement('div');
+    form.className = "form-wrap";
+    formEl.appendChild(form);
+    let [formhtml, isVisit] = formHtml();
+    form.innerHTML = formhtml;
+    let tt = formEl.querySelector('#form-message');
+    tt.addEventListener('submit', handleFormSubmit.bind(null, isVisit));
+    
+    isVisit ? form.querySelector('.guest-wrap').style.display = 'none' : form.querySelector('.guest-wrap').style.display = 'block';
+    isVisit ? form.querySelector('.social').style.display = 'none' : form.querySelector('.social').style.display = 'block';
+    // console.log(form.querySelector("#btn-form"));
+    // form.querySelector("#btn-form").dispatchEvent(new Event("submit", {bubbles: true}));
+
+
+}
 let messageEl;
 let mess;
 
+/// Отправка лайков и дизлайков
+async function clickLike(e) {
+    let data = {
+        "widget_id":10088,
+        "page_id":1    ,
+        "neiros_visit":2
+    }
+    if(e.classList.contains('like')) {                                       /// Записываем лайк 1 в data, если нажали лайк
+        data.like = Number(e.childNodes[3].innerHTML) + 1;
+    }
+    else data.dislike = Number(e.childNodes[3].innerHTML) + 1;               /// Записываем в data дизлайк в 1   
+
+
+    let response = await fetch('https://test.neiros.ru/api/comments/add_like', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        cookie: Cookie,
+        body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+        let res = await response.json();
+        initElements(res);                                                    /// Получаем ответ от сервера и из ответа берем кол-во лайков и дизлайков и устанавливаем на страницу
+    }
+}
+
+async function sendComment(e) {
+    let data = {
+        "widget_id":10088,
+        "page_id":1    ,
+        "neiros_visit":2
+    }
+
+    console.log(e);
+
+
+    // let response = await fetch('https://test.neiros.ru/api/comments/add_like', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     cookie: Cookie,
+    //     body: JSON.stringify(data)
+    // });
+
+    // if (response.ok) {
+    //     let res = await response.json();
+    //     initElements(res);                                                    /// Получаем ответ от сервера и из ответа берем кол-во лайков и дизлайков и устанавливаем на страницу
+    // }
+}
+
+function handleFormSubmit(e) {
+    e.preventDefault();
+    console.log(e.target[0].value);
+    console.dir(e.target[1].attributes.name.value)
+    console.dir(e.target[2].attributes.name.value)
+    console.log(this.isVisit);
+}
 
 // Инициализация рейтинга
 function initRaiting(raitingServ) {
     // Проверим есть ли на странице рейтинги
     if (raitings.length) {
         initRaitings();
+        
     }
     // Установка рейтингов
     function initRaitings() {
@@ -38,6 +125,7 @@ function initRaiting(raitingServ) {
 
         for (let i = 0; i < raitings.length; i++) {
             const raiting = raitings[i];
+            // raiting.classList.remove('rating-set')                 /// Установка класса для возможности редактирования рейтинга
             firstInit(raiting, raitingServ);
             initRaitingItem(raiting);
         }
@@ -59,7 +147,6 @@ function initRaiting(raitingServ) {
             raitingActive = raiting.querySelector('.raiting-active');
             raitingValue = raiting.querySelector('.raiting-value');
             if (first) {
-                console.log(first);
                 raitingValue.innerHTML = first;
             }
         }
@@ -69,29 +156,31 @@ function initRaiting(raitingServ) {
         }
         // Установка рейтинга при срабатывании слушателей (наведение, клик)
         function setRaiting(raiting) {
-
-            function mouseEnter(e) {
-                initRaitingVars(this.raiting);
-                setRaitingActiveWidth(this.value);
-            }
-            function mouseLeave(e) {
-                initRaitingVars(this.raiting);
-                setRaitingActiveWidth();
-            }
-            function sendServer(e) {
-                raiting.classList.add('pending');
-                raiting.classList.remove("rating-set");
-                sendRaitingOnServer(this.raiting, this.value);
-            }
             const raitingItems = raiting.querySelectorAll('.raiting-item');
             for (let i = 0; i < raitingItems.length; i++) {
                 const raitingItem = raitingItems[i];
-                if (raiting.classList.contains("rating-set")) {
-                    raitingItem.addEventListener("mouseenter", { handleEvent: mouseEnter, raiting, value: raitingItem.value });
-                    raitingItem.addEventListener("mouseleave", { handleEvent: mouseLeave, raiting });
-                    raitingItem.addEventListener("click", { handleEvent: sendServer, raiting, value: raitingItem.value });
-                }
+                raitingItem.addEventListener("mouseenter", mouseEnter);
+                raitingItem.addEventListener("mouseleave", mouseLeave);
+                raitingItem.addEventListener("click", sendServer);
             }
+            function mouseEnter(e) {
+                initRaitingVars(raiting);
+                setRaitingActiveWidth(e.target.value);
+            }
+            function mouseLeave(e) {
+                initRaitingVars(raiting);
+                setRaitingActiveWidth();
+            }
+
+            function sendServer(e) {
+                for (let i = 0; i < e.path[1].children.length; i++) {
+                    e.path[1].children[i].removeEventListener("mouseenter", mouseEnter);
+                    e.path[1].children[i].removeEventListener("mouseleave", mouseLeave);
+                    e.path[1].children[i].removeEventListener("click", sendServer);
+                }
+                sendRaitingOnServer(raiting, e.target.value);
+            }
+
         }
         // Отправка рейтинга на сервер, получение и установка на стороне клиента
         async function sendRaitingOnServer(raiting, value) {
@@ -115,8 +204,6 @@ function initRaiting(raitingServ) {
 
             if (response.ok) {
                 let res = await response.json();
-                // raitingValue.innerHTML = res.rating;
-                // setRaitingActiveWidth();
                 raiting.classList.remove('pending');
                 raiting.classList.remove('rating-set');                                        // Если не удалять этот класс, то рейтинг можно отправить снова
                 let rr = raiting.querySelectorAll('.raiting-item');
@@ -211,7 +298,7 @@ window.onload = async () => {
         body: JSON.stringify(data)
     });
     let result = await response.json();
-    initElements(result)
+    initElements(result);
     initRaiting(result.rating);
 }
 
@@ -219,137 +306,163 @@ function editMessage(e) {
     document.getElementById(`mess-body${e.id.slice(4)}`).setAttribute("contenteditable", "true");
 }
 
-
-like.innerHTML = `
-        <div class="like-icon like">
+function likeHtml(like) {
+    return (
+        like.innerHTML = `
+        <div class="like-icon like" onclick=clickLike(this)>
             <svg class="icon"><use xlink:href="#icon-like"></use></svg>
             <span id="li"></span>
         </div>
-        <div class="like-icon dislike">
+        <div class="like-icon dislike" onclick=clickLike(this)>
             <svg class="icon" ><use xlink:href="#icon-dislike"></use></svg>
             <span id="dis"></span>
         </div>
-`
-show.innerHTML = `
-    <div>
-        <div class="show">
-            <div class="show-icon">
-                <svg class="icon"><use xlink:href="#icon-eye"></use></svg>
-                <span id="show-data"></span>
-            </div>
-        </div>
-    </div>
-`
-raiting.innerHTML = `
-    <div class="raiting-body">
-        <div class="raiting-active"></div>
-        <div class="raiting-items">
-            <input type="radio" class="raiting-item" value="1" name="raiting">
-            <input type="radio" class="raiting-item" value="2" name="raiting">
-            <input type="radio" class="raiting-item" value="3" name="raiting">
-            <input type="radio" class="raiting-item" value="4" name="raiting">
-            <input type="radio" class="raiting-item" value="5" name="raiting">
-        </div>
-    </div>
-    <div class="raiting-value"> 0 </div>
+        `
+    )
+}
 
-`
-form.innerHTML = `
-<form class="form-wrapper">
-    <div class="form">
-        <h3 class="s-review-title">
-            Комментарии
-        </h3>
-
-        <div class="form-group">
-            <textarea name="message" rows="4" class="form-control" placeholder="Введите текст комментария"></textarea>
-
-            <div class="form-control-settings">
-                <div>
-                    <svg class="icon icon-paperclip"><use xlink:href="#icon-paperclip"></use></svg>
-                </div>
-
-                <div>
-                    <svg class="icon icon-smile"><use xlink:href="#icon-smile"></use></svg>
+function showHtml(show) {
+    return (
+        show.innerHTML = `
+        <div>
+            <div class="show">
+                <div class="show-icon">
+                    <svg class="icon"><use xlink:href="#icon-eye"></use></svg>
+                    <span id="show-data"></span>
                 </div>
             </div>
         </div>
-    </div>
+        `
+    )
+}
 
-    <div class="entry">
-        <div class="social">
-            <div class="entry-label">
-                Войти через соцсеть
+function raitingHtml(raiting) {
+    return (
+        raiting.innerHTML = `
+        <div class="raiting-body">
+            <div class="raiting-active"></div>
+            <div class="raiting-items">
+                <input type="radio" class="raiting-item" value="1" name="raiting">
+                <input type="radio" class="raiting-item" value="2" name="raiting">
+                <input type="radio" class="raiting-item" value="3" name="raiting">
+                <input type="radio" class="raiting-item" value="4" name="raiting">
+                <input type="radio" class="raiting-item" value="5" name="raiting">
             </div>
-
-            <ul class="social-list">
-                <li class="social-item">
-                    <div class="social-link">
-                        <i class="fab fa-facebook-f"></i>
-                    </div>
-                </li>
-                <li class="social-item">
-                    <div class="social-link">
-                        <i class="fab fa-odnoklassniki"></i>
-                    </div>
-                </li>
-                <li class="social-item">
-                    <div class="social-link">
-                        <i class="fab fa-vk"></i>
-                    </div>
-                </li>
-                <li class="social-item">
-                    <div class="social-link">
-                        <i class="fab fa-google-plus-g"></i>
-                    </div>
-                </li>
-                <li class="social-item">
-                    <div class="social-link">
-                        <i class="fab fa-yandex"></i>
-                    </div>
-                </li>
-                                
-            </ul>
         </div>
+        <div class="raiting-value"> 0 </div>
+    ` )
+}
 
-        <div class="guest-wrap">
-            <div>
-                <div class="entry-label">
-                    Или как гость
-                </div>
-                <div class="f-wrap">
-                    <div class="form-group form-name">
-                        <input type="text" name="Name" id="" class="form-control" placeholder="Ваше имя *">
+function formHtml() {
+    let isVisit = false;
+    // if(!localStorage.getItem('isVisit')){
+    //     localStorage.setItem('isVisit', true)
+    // }
+    // else {
+    //     isVisit = localStorage.getItem('isVisit')
+        
+    // }
+    return ([
+        `
+        <form method="post" class="form-wrapper" id="form-message">
+            <div class="form">
+                <h3 class="s-review-title">
+                    Комментарии
+                </h3>
+
+                <div class="form-group">
+                    <textarea name="message" rows="4" class="form-control" placeholder="Введите текст комментария"></textarea>
+
+                    <div class="form-control-settings">
+                        <div>
+                            <svg class="icon icon-paperclip"><use xlink:href="#icon-paperclip"></use></svg>
+                        </div>
+
+                        <div>
+                            <svg class="icon icon-smile"><use xlink:href="#icon-smile"></use></svg>
+                        </div>
                     </div>
-                    <div class="form-group form-email">
-                        <input type="email" name="Email" id="" class="form-control" placeholder="Email *">
+                </div>
+
+
+            <div class="entry">
+                <div class="social">
+                    <div class="entry-label">
+                        Войти через соцсеть
+                    </div>
+
+                    <ul class="social-list">
+                        <li class="social-item">
+                            <div class="social-link">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                        </li>
+                        <li class="social-item">
+                            <div class="social-link">
+                                <i class="fab fa-odnoklassniki"></i>
+                            </div>
+                        </li>
+                        <li class="social-item">
+                            <div class="social-link">
+                                <i class="fab fa-vk"></i>
+                            </div>
+                        </li>
+                        <li class="social-item">
+                            <div class="social-link">
+                                <i class="fab fa-google-plus-g"></i>
+                            </div>
+                        </li>
+                        <li class="social-item">
+                            <div class="social-link">
+                                <i class="fab fa-yandex"></i>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <div class="guest-wrap">
+                    <div>
+                        <div class="entry-label">
+                            Или как гость
+                        </div>
+                        <div class="f-wrap">
+                            <div class="form-group form-name">
+                                <input type="text" name="Name" id="" class="form-control" placeholder="Ваше имя *">
+                            </div>
+                            <div class="form-group form-email">
+                                <input type="email" name="Email" id="" class="form-control" placeholder="Email *">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="btn-wrap">
-                <div class="btn btn-primary" id="ncc">
+                <button type="submit" class="btn btn-primary">
                     <span>Отправить комментарий</span>
+                </button>
+            </div>
+        </form>
+        </div>
+        <div class="message-wrap" id="m-w">
+
+            <div class="btn-wrap-next">
+                <div class="btn btn-outline-secondary" onclick = getMessage()>
+                    <span>Следующие сообщения</span>
+                </div>
             </div>
         </div>
-</form>
-</div>
-<div class="message-wrap" id="m-w">
 
-    <div class="btn-wrap-next">
-        <div class="btn btn-outline-secondary" onclick = getMessage()>
-            <span>Следующие сообщения</span>
+        <hr color="#d1d1d1" size="1"/>
+
+        <div class="footer">
+            <div>
+                Политика конфиденциальности
+            </div>
+            <div>
+                <img src="images/logo-neiros.svg" alt="Neiros" width="102" height="25">
+            </div>
         </div>
-    </div>
-</div>
-
-<hr color="#d1d1d1" size="1"/>
-
-<div class="footer">
-    <div>
-        Политика конфиденциальности
-    </div>
-    <div>
-        <img src="images/logo-neiros.svg" alt="Neiros" width="102" height="25">
-    </div>
-</div>
-`
+        `, isVisit]
+    )
+}
