@@ -1,5 +1,14 @@
 const Cookie = 'XSRF-TOKEN=eyJpdiI6Imh3NGlUZjcvUStIT3J5d252a203TUE9PSIsInZhbHVlIjoiOXRmU01NQ1RPZzlZdzVEZHNNNEtBUEVWZ0RZTWdjbk9jdE1rK3hieUlLd3Fka1oyc1VBYmEvTURiVXEzRERBUDgxSDRwYS9mWXViOHoycXMxTjVka3pzSUE1VHhxSFUxQzdodFFKSVFiTEVBR21LYmdaSUh1RE54L2NwblZ4cUEiLCJtYWMiOiI2ZWY0ZDdkMDY4MWM0YmM1YjRjOTRkMjA5YzU3YzY2NWFkOGE5MTU4ODA1MmI3OTJjYzc1YTY0ODg4YzZlM2JmIn0%253D; neiros_session=eyJpdiI6Im51ODB3cDFSbSs0SFUwQmF2aktnTmc9PSIsInZhbHVlIjoieStyY2plQlJTMnJkaXV1L2ZETHNRajlsZ3A5N085MGVOS2RpcmNNNjNmK3duNEExbTZscjEzK1lCVzFFbHo0WmIrS0VkQlJZTFJ0MGd5clpOVm16QXZhV2NBc0dpM3o2R1FBbjVaNjZCanVYa25taitaQVc4Wi85dGVteHJZUC8iLCJtYWMiOiIwMmU1MGVhMGM0YmNkMzU3ZjY0OGNkNjM0OWE4MzhhNzc1NjlhMzhmODZlMDg5YTY4ZDUzYWRiYmViYTlmMTljIn0%253D';
 
+const api_http = {
+    like: 'https://test.neiros.ru/api/comments/add_like',
+    sendMessage: 'https://test.neiros.ru/api/comments/add_comment',
+    getMessage: 'https://test.neiros.ru/api/comments/getInfo',
+    initPage: 'http://127.0.0.1:3333/getinfo',
+    sendRating: 'http://127.0.0.1:3333/sendRaiting'
+}
+
+
 if (document.getElementById('LikeId')) {
     const likeEl = document.getElementById('LikeId');           // Ищем элемент чтобы вставить лайки
     const like = document.createElement('div');
@@ -69,7 +78,7 @@ async function clickLike(e) {
     }
     else data.dislike = Number(e.childNodes[3].innerHTML) + 1;               /// Записываем в data дизлайк в 1   
 
-    let response = await fetch('https://test.neiros.ru/api/comments/add_like', {
+    let response = await fetch(api_http.like, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -95,7 +104,6 @@ async function handleFormSubmit(e) {
         message: "",
         name: "",
         email: ""
-
     }
 
     let name = this.tt.querySelector('#form-name').value;
@@ -105,7 +113,7 @@ async function handleFormSubmit(e) {
     data.email = mail;
     data.message = mess;
 
-    let response = await fetch('https://test.neiros.ru/api/comments/add_comment', {
+    let response = await fetch(api_http.sendMessage, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -115,7 +123,7 @@ async function handleFormSubmit(e) {
     });
 
     if (response.ok) {
-        let res = await response.json();
+        // let res = await response.json()         Что-то делаем с ответом сервера?
         this.isVisit = true;
         localStorage.setItem('isVisit', true);
         name = "";
@@ -208,8 +216,8 @@ function initRaiting(raitingServ) {
                 page: 1,            // пагинация и просто номер страницы
                 raiting: { raiting, value }
             }
-            // let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
-            let response = await fetch('http://127.0.0.1:3333/sendRaiting', {
+            
+            let response = await fetch(api_http.sendRating, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -220,15 +228,13 @@ function initRaiting(raitingServ) {
 
             if (response.ok) {
                 let res = await response.json();
-                raiting.classList.remove('pending');
+                raiting.classList.remove('pending');                                           // Сюда можно навесить лоадер
                 raiting.classList.remove('rating-set');                                        // Если не удалять этот класс, то рейтинг можно отправить снова
                 let rr = raiting.querySelectorAll('.raiting-item');
                 rr.forEach(el => el.style.cursor = 'auto');                                    // Удаляем указатель 
 
-                initRaiting(res.rating)
-
+                initRaiting(res.rating)                                                        // Установка рейтинга на страницу от сервера
             }
-
         }
     }
 }
@@ -248,7 +254,7 @@ async function getMessage() {
 
     data.page = count_page;
 
-    let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
+    let response = await fetch(api_http.getMessage, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -326,7 +332,7 @@ window.onload = async () => {
         page: 1                           // пагинация и просто номер страницы 
     }
     // let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
-    let response = await fetch('http://127.0.0.1:3333/getinfo', {
+    let response = await fetch(api_http.initPage, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -334,9 +340,13 @@ window.onload = async () => {
         cookie: Cookie,
         body: JSON.stringify(data)
     });
-    let result = await response.json();
-    initElements(result);
-    initRaiting(result.rating);
+    if (response.ok){
+        let result = await response.json();
+        initElements(result);
+        initRaiting(result.rating);
+    }
+    else alert("Нет соединения с сервером....")
+
 }
 
 function editMessage(e) {
