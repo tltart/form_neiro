@@ -30,7 +30,6 @@ if (document.getElementById('RaitingId')) {
 }
 
 
-
 if (document.getElementById('FormId')) {
     const formEl = document.getElementById('FormId');
     const form = document.createElement('div');
@@ -38,31 +37,37 @@ if (document.getElementById('FormId')) {
     formEl.appendChild(form);
     let [formhtml, isVisit] = formHtml();
     form.innerHTML = formhtml;
+    if (!isVisit) {
+        let name = form.querySelector('#form-name');
+        name.required = true;
+        let mail = form.querySelector('#form-email');
+        mail.required = true;
+    }
     let tt = formEl.querySelector('#form-message');
-    tt.addEventListener('submit', handleFormSubmit.bind(null, isVisit));
-    
+    tt.addEventListener('submit', handleFormSubmit.bind({ tt, isVisit }));
+
     isVisit ? form.querySelector('.guest-wrap').style.display = 'none' : form.querySelector('.guest-wrap').style.display = 'block';
     isVisit ? form.querySelector('.social').style.display = 'none' : form.querySelector('.social').style.display = 'block';
-    // console.log(form.querySelector("#btn-form"));
-    // form.querySelector("#btn-form").dispatchEvent(new Event("submit", {bubbles: true}));
-
-
 }
+
 let messageEl;
 let mess;
+const count_page = 1;      // Пагинация
+
 
 /// Отправка лайков и дизлайков
 async function clickLike(e) {
     let data = {
-        "widget_id":10088,
-        "page_id":1    ,
-        "neiros_visit":2
+        widget_id: 10088,
+        page_id: 1,
+        neiros_visit: 2,
+        like: "",
+        dislike: "",
     }
-    if(e.classList.contains('like')) {                                       /// Записываем лайк 1 в data, если нажали лайк
+    if (e.classList.contains('like')) {                                       /// Записываем лайк 1 в data, если нажали лайк
         data.like = Number(e.childNodes[3].innerHTML) + 1;
     }
     else data.dislike = Number(e.childNodes[3].innerHTML) + 1;               /// Записываем в data дизлайк в 1   
-
 
     let response = await fetch('https://test.neiros.ru/api/comments/add_like', {
         method: 'POST',
@@ -79,37 +84,48 @@ async function clickLike(e) {
     }
 }
 
-async function sendComment(e) {
+/// Отправка сообщения на сервер 
+async function handleFormSubmit(e) {
+    e.preventDefault();
+
     let data = {
-        "widget_id":10088,
-        "page_id":1    ,
-        "neiros_visit":2
+        widget_id: 10088,
+        page_id: 1,
+        neiros_visit: 1,
+        message: "",
+        name: "",
+        email: ""
+
     }
 
-    console.log(e);
+    let name = this.tt.querySelector('#form-name').value;
+    let mail = this.tt.querySelector('#form-email').value;
+    let mess = this.tt.querySelector('#form-message').value;
+    data.name = name;
+    data.email = mail;
+    data.message = mess;
 
+    let response = await fetch('https://test.neiros.ru/api/comments/add_comment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        cookie: Cookie,
+        body: JSON.stringify(data)
+    });
 
-    // let response = await fetch('https://test.neiros.ru/api/comments/add_like', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     cookie: Cookie,
-    //     body: JSON.stringify(data)
-    // });
+    if (response.ok) {
+        let res = await response.json();
+        this.isVisit = true;
+        localStorage.setItem('isVisit', true);
+        name = "";
+        mail = "";
+        mess = "";
+        location.reload();
 
-    // if (response.ok) {
-    //     let res = await response.json();
-    //     initElements(res);                                                    /// Получаем ответ от сервера и из ответа берем кол-во лайков и дизлайков и устанавливаем на страницу
-    // }
-}
+    }
+    else alert("Нет соединения с сервером...");
 
-function handleFormSubmit(e) {
-    e.preventDefault();
-    console.log(e.target[0].value);
-    console.dir(e.target[1].attributes.name.value)
-    console.dir(e.target[2].attributes.name.value)
-    console.log(this.isVisit);
 }
 
 // Инициализация рейтинга
@@ -117,7 +133,7 @@ function initRaiting(raitingServ) {
     // Проверим есть ли на странице рейтинги
     if (raitings.length) {
         initRaitings();
-        
+
     }
     // Установка рейтингов
     function initRaitings() {
@@ -185,12 +201,12 @@ function initRaiting(raitingServ) {
         // Отправка рейтинга на сервер, получение и установка на стороне клиента
         async function sendRaitingOnServer(raiting, value) {
             let data = {
-                "widget_id": 10088,     /// global.config
-                "page_url": window.location.href, // windows.document.location (без параметорв)
-                "metrika_id": "3",      /// global.config (от сессии завист и меняется)
-                "neiros_visit": "1",    // global.config (уникальный)
-                "page": "1",            // пагинация и просто номер страницы
-                "raiting": { raiting, value }
+                widget_id: 10088,     /// global.config
+                page_url: window.location.href, // windows.document.location (без параметорв)
+                metrika_id: 3,      /// global.config (от сессии завист и меняется)
+                neiros_visit: 1,    // global.config (уникальный)
+                page: 1,            // пагинация и просто номер страницы
+                raiting: { raiting, value }
             }
             // let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
             let response = await fetch('http://127.0.0.1:3333/sendRaiting', {
@@ -218,56 +234,77 @@ function initRaiting(raitingServ) {
 }
 
 ////// Функция получения сообщений с сервера по клику на кнопку "Следующие сообщения"
+
 async function getMessage() {
-    let response = await fetch('http://127.0.0.1:3333/m');
+    count_page ++;
+
+    let data = {
+        widget_id: 10088,
+        page_url: window.location.href,
+        metrika_id: 3,
+        neiros_visit: 1,
+        page: 1
+    }
+
+    data.page = count_page;
+
+    let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        cookie: Cookie,
+        body: JSON.stringify(data)
+    });
     let result = await response.json();
-    console.log(result.comments.data);
+
+    console.log(result.comments.data);                                      /// Сообщения лежат здесь в ответе 
 
     Array.from(result.comments.data).forEach(el => {
         let messageParent = document.getElementById("m-w");
         let messageFromServer = document.createElement('div');
         messageFromServer.className = "mess-item-wrap";
         messageFromServer.innerHTML = `
-    <div class="mess-item">
-        <div class="mess-item-icon">
-            <i class="fa fa-user-circle fa-4x" aria-hidden="true"></i>
-            <div class="mess-social-item">
-                <div class="social-link">
-                    <i class="fab fa-odnoklassniki"></i>
+            <div class="mess-item">
+                <div class="mess-item-icon">
+                    <i class="fa fa-user-circle fa-4x" aria-hidden="true"></i>
+                    <div class="mess-social-item">
+                        <div class="social-link">
+                            <i class="fab fa-odnoklassniki"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="data-message-wrap">
+                    <div id="name-user">
+                        Имя Пользователя
+                    <span>2 секунды назад</span>
+                    </div>
+                    <hr color="#d1d1d1" size="1"/>
+                    <div class="break-line" style="width:100%"></div>
+                    <div class="mess-body" id="mess-body${el.id}">
+                    ${el.text}
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="data-message-wrap">
-            <div id="name-user">
-                Имя Пользователя
-            <span>2 секунды назад</span>
+            <div class="reply-message-wrap">
+                <div class="reply-message-icon" id="edit${el.id}" onclick = editMessage(this)>
+                    <svg class="icon" ><use xlink:href="#icon-pencil"></use></svg>
+                    Редактировать
+                </div>
+                <div class="reply-message-icon">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                    Удалить
+                </div>
+                <div class="like-icon like reply-message-icon">
+                    <svg class="icon"><use xlink:href="#icon-like"></use></svg>
+                    <span id="rm-like">0</span>
+                </div>
+                <div class="like-icon dislike reply-message-icon">
+                    <svg class="icon" ><use xlink:href="#icon-dislike"></use></svg>
+                    <span id="rm-dislike">0</span>
+                </div>
             </div>
-            <hr color="#d1d1d1" size="1"/>
-            <div class="break-line" style="width:100%"></div>
-            <div class="mess-body" id="mess-body${el.id}">
-            ${el.text}
-            </div>
-        </div>
-    </div>
-    <div class="reply-message-wrap">
-        <div class="reply-message-icon" id="edit${el.id}" onclick = editMessage(this)>
-            <svg class="icon" ><use xlink:href="#icon-pencil"></use></svg>
-            Редактировать
-        </div>
-        <div class="reply-message-icon">
-            <i class="fa fa-trash" aria-hidden="true"></i>
-            Удалить
-        </div>
-        <div class="like-icon like reply-message-icon">
-            <svg class="icon"><use xlink:href="#icon-like"></use></svg>
-            <span id="rm-like">0</span>
-        </div>
-        <div class="like-icon dislike reply-message-icon">
-            <svg class="icon" ><use xlink:href="#icon-dislike"></use></svg>
-            <span id="rm-dislike">0</span>
-        </div>
-    </div>
-    `;
+            `;
         messageParent.insertBefore(messageFromServer, messageParent.firstElementChild);
     })
 }
@@ -282,11 +319,11 @@ function initElements(res) {
 // Функция получения данных после полной загрузки страницы
 window.onload = async () => {
     let data = {
-        "widget_id": 10088,                 /// global.config
-        "page_url": window.location.href,   // windows.document.location (без параметорв)
-        "metrika_id": "3",                  /// global.config (от сессии завист и меняется)
-        "neiros_visit": "1",                // global.config (уникальный)
-        "page": "1"                         // пагинация и просто номер страницы 
+        widget_id: 10088,                 /// global.config
+        page_url: window.location.href,   // windows.document.location (без параметорв)
+        metrika_id: 3,                    /// global.config (от сессии завист и меняется)
+        neiros_visit: 1,                  // global.config (уникальный)
+        page: 1                           // пагинация и просто номер страницы 
     }
     // let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
     let response = await fetch('http://127.0.0.1:3333/getinfo', {
@@ -355,13 +392,8 @@ function raitingHtml(raiting) {
 
 function formHtml() {
     let isVisit = false;
-    // if(!localStorage.getItem('isVisit')){
-    //     localStorage.setItem('isVisit', true)
-    // }
-    // else {
-    //     isVisit = localStorage.getItem('isVisit')
-        
-    // }
+    isVisit = localStorage.getItem('isVisit');
+
     return ([
         `
         <form method="post" class="form-wrapper" id="form-message">
@@ -371,7 +403,7 @@ function formHtml() {
                 </h3>
 
                 <div class="form-group">
-                    <textarea name="message" rows="4" class="form-control" placeholder="Введите текст комментария"></textarea>
+                    <textarea id="form-message" name="message" rows="4" class="form-control" placeholder="Введите текст комментария" required minlength=5></textarea>
 
                     <div class="form-control-settings">
                         <div>
@@ -428,10 +460,10 @@ function formHtml() {
                         </div>
                         <div class="f-wrap">
                             <div class="form-group form-name">
-                                <input type="text" name="Name" id="" class="form-control" placeholder="Ваше имя *">
+                                <input type="text" name="Name" id="form-name" class="form-control" placeholder="Ваше имя *">
                             </div>
                             <div class="form-group form-email">
-                                <input type="email" name="Email" id="" class="form-control" placeholder="Email *">
+                                <input type="email" name="Email" id="form-email" class="form-control" placeholder="Email *">
                             </div>
                         </div>
                     </div>
