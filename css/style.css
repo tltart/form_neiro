@@ -535,7 +535,8 @@ ul li:not(:first-child) {
 
 .mess-body {
     word-break: break-all;
-    height: 70px;
+    height: auto;
+    max-height: 70px;
     overflow-y: scroll;
     padding-right: 40px;
     user-select: none;
@@ -543,9 +544,10 @@ ul li:not(:first-child) {
 
 .reply-message-wrap{
     height: 30px;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-left: 79px;
     display: flex;
+    align-items: flex-end;
 
 }
 .reply-message-icon{
