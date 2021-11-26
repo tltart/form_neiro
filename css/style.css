@@ -552,14 +552,18 @@ ul li:not(:first-child) {
     cursor: pointer;
 }
 .reply-message-icon .icon {
-    width: 1rem;
-    height: 1rem;
+    width: 1em;
+    height: 1em;
 }
 .reply-message-icon:not(:first-child){
     margin-left: 3em;
 }
 .reply-message-icon span{
     margin-left: 0.5em;
+    font-family: 'Raleway', Arial, sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    color: #222;
 }
 .footer {
     margin-top: 20px;

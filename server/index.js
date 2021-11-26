@@ -124,7 +124,8 @@ const info = {
 app.get('/', (req, res) => {
         res.json(o)
     })
-app.get('/m', (req, res) => {
+app.post('/m', (req, res) => {
+    console.log(req);
         res.json(mm)
     })
 app.post('/getinfo', (req, res) => {
