@@ -1,21 +1,12 @@
 const Cookie = 'XSRF-TOKEN=eyJpdiI6Imh3NGlUZjcvUStIT3J5d252a203TUE9PSIsInZhbHVlIjoiOXRmU01NQ1RPZzlZdzVEZHNNNEtBUEVWZ0RZTWdjbk9jdE1rK3hieUlLd3Fka1oyc1VBYmEvTURiVXEzRERBUDgxSDRwYS9mWXViOHoycXMxTjVka3pzSUE1VHhxSFUxQzdodFFKSVFiTEVBR21LYmdaSUh1RE54L2NwblZ4cUEiLCJtYWMiOiI2ZWY0ZDdkMDY4MWM0YmM1YjRjOTRkMjA5YzU3YzY2NWFkOGE5MTU4ODA1MmI3OTJjYzc1YTY0ODg4YzZlM2JmIn0%253D; neiros_session=eyJpdiI6Im51ODB3cDFSbSs0SFUwQmF2aktnTmc9PSIsInZhbHVlIjoieStyY2plQlJTMnJkaXV1L2ZETHNRajlsZ3A5N085MGVOS2RpcmNNNjNmK3duNEExbTZscjEzK1lCVzFFbHo0WmIrS0VkQlJZTFJ0MGd5clpOVm16QXZhV2NBc0dpM3o2R1FBbjVaNjZCanVYa25taitaQVc4Wi85dGVteHJZUC8iLCJtYWMiOiIwMmU1MGVhMGM0YmNkMzU3ZjY0OGNkNjM0OWE4MzhhNzc1NjlhMzhmODZlMDg5YTY4ZDUzYWRiYmViYTlmMTljIn0%253D';
 
-// const api_http = {
-//     like: 'https://test.neiros.ru/api/comments/add_like',
-//     sendMessage: 'https://test.neiros.ru/api/comments/add_comment',
-//     getMessage: 'https://test.neiros.ru/api/comments/getInfo',
-//     initPage: 'https://test.neiros.ru/api/comments/getInfo',
-//     sendRating: 'https://test.neiros.ru/api/comments/add_rating'
-// }
 const api_http = {
     like: 'https://test.neiros.ru/api/comments/add_like',
     sendMessage: 'https://test.neiros.ru/api/comments/add_comment',
-    getMessage: 'http://127.0.0.1:3333/m',
-    initPage: 'http://127.0.0.1:3333/getinfo',
-    sendRating: 'http://127.0.0.1:3333/sendRaiting'
+    getMessage: 'https://test.neiros.ru/api/comments/getInfo',
+    initPage: 'https://test.neiros.ru/api/comments/getInfo',
+    sendRating: 'https://test.neiros.ru/api/comments/sendRaiting'
 }
-
-
 
 
 function addLinks() {
@@ -100,9 +91,9 @@ let count_page = 1;      // Пагинация
 /// Отправка лайков и дизлайков
 async function clickLike(e) {
     let data = {
-        widget_id: 10088,
+        widget_id: CBU_GLOBAL.config.widget.tip_33.widget_id,
         page_id: 1,
-        neiros_visit: 2,
+        neiros_visit: neiros_visit,
         like: "",
         dislike: "",
     }
@@ -131,9 +122,9 @@ async function handleFormSubmit(e) {
     e.preventDefault();
 
     let data = {
-        widget_id: 10088,
+        widget_id: CBU_GLOBAL.config.widget.tip_33.widget_id,
         page_id: 1,
-        neiros_visit: 1,
+        neiros_visit: neiros_visit,
         message: "",
         name: "",
         email: ""
@@ -242,11 +233,11 @@ function initRaiting(raitingServ) {
         // Отправка рейтинга на сервер, получение и установка на стороне клиента
         async function sendRaitingOnServer(raiting, value) {
             let data = {
-                widget_id: 10088,     /// global.config
-                page_url: window.location.href, // windows.document.location (без параметорв)
-                metrika_id: 3,      /// global.config (от сессии завист и меняется)
-                neiros_visit: 1,    // global.config (уникальный)
-                page: 1,            // пагинация и просто номер страницы
+                widget_id: CBU_GLOBAL.config.widget.tip_33.widget_id,
+                page_url: window.location.href,
+                metrika_id: NEIROS_METRIKA_ID,
+                neiros_visit: neiros_visit,
+                page: 1,
                 raiting: { raiting, value }
             }
 
@@ -273,15 +264,14 @@ function initRaiting(raitingServ) {
 }
 
 ////// Функция получения сообщений с сервера по клику на кнопку "Следующие сообщения"
-
 async function getMessage() {
     count_page++;
 
     let data = {
-        widget_id: 10088,
+        widget_id: CBU_GLOBAL.config.widget.tip_33.widget_id,
         page_url: window.location.href,
-        metrika_id: 3,
-        neiros_visit: 1,
+        metrika_id: NEIROS_METRIKA_ID,
+        neiros_visit: neiros_visit,
         page: 1
     }
 
@@ -298,7 +288,7 @@ async function getMessage() {
     if (response.ok) {
         let result = await response.json();
 
-        // console.log(api_data.comments);                                      /// Сообщения лежат здесь в ответе 
+        // console.log(result.comments.data);                                      /// Сообщения лежат здесь в ответе 
 
         Array.from(result.comments.data).forEach(el => {
             let messageParent = document.getElementById("m-w");
@@ -377,13 +367,13 @@ function initElements(res) {
 // Функция получения данных после полной загрузки страницы
 window.onload = async () => {
     let data = {
-        widget_id: 10088,                 /// global.config
-        page_url: window.location.href,   // windows.document.location (без параметорв)
-        metrika_id: 3,                    /// global.config (от сессии завист и меняется)
-        neiros_visit: 1,                  // global.config (уникальный)
-        page: 1                           // пагинация и просто номер страницы 
+        widget_id: CBU_GLOBAL.config.widget.tip_33.widget_id,
+        page_url: window.location.href,
+        metrika_id: NEIROS_METRIKA_ID,
+        neiros_visit: neiros_visit,
+        page: 1
     }
-    // let response = await fetch('https://test.neiros.ru/api/comments/getInfo', {
+    
     let response = await fetch(api_http.initPage, {
         method: 'POST',
         headers: {
