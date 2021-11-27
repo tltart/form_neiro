@@ -350,7 +350,7 @@ async function getMessage() {
                     </div>
                 </div>
                 `;
-            messageParent.insertBefore(messageFromServer, messageParent.firstElementChild);
+            messageParent.insertBefore(messageFromServer, messageParent.lastElementChild);
         })
     }
     else alert("Нет соединения...")
@@ -386,6 +386,7 @@ window.onload = async () => {
         let result = await response.json();
         initElements(result);
         initRaiting(result.rating);
+        getMessage();
     }
     else alert("Нет соединения с сервером....")
 

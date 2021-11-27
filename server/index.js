@@ -76,34 +76,32 @@ const mm = {
             {
                 id: 1,
                 page_id: 1,
-                text: `kflgkflgПОожыбмжыьмабмьюбмсыздлмыдаьмыамьдыалмьдалмтадмтыадмлkflgkflgkf
-                ПОожыбмжыьмабмьюбм
-                сыздлмыдаьмыамьдыалмьдалмтадмтыадмл`
+                text: `11111111111111111111111111111111111111111`
             },
             {
                 id: 2,
                 page_id: 1,
-                text: `Парам-парам-пам`
+                text: `22222222222222222222222222222222222222222`
             },
             {
                 id: 3,
                 page_id: 1,
-                text: `Парам-парам-пам`
+                text: `33333333333333333333333333333333333333333`
             },
             {
                 id: 4,
                 page_id: 1,
-                text: `Парам-парам-пам`
+                text: `44444444444444444444444444444444444444444`
             },
             {
                 id: 5,
                 page_id: 1,
-                text: `Парам-парам-пам`
+                text: `55555555555555555555555555555555555555555`
             },
             {
                 id: 6,
                 page_id: 1,
-                text: `Парам-парам-пам`
+                text: `66666666666666666666666666666666666666666`
             }
         ]
 
@@ -125,7 +123,6 @@ app.get('/', (req, res) => {
         res.json(o)
     })
 app.post('/m', (req, res) => {
-    console.log(req);
         res.json(mm)
     })
 app.post('/getinfo', (req, res) => {
@@ -136,7 +133,6 @@ app.post('/sendRaiting', (req, res) => {
         info.views += 1;
         info.total_rating = info.total_rating + Number(req.body.raiting.value)
         info.rating = info.total_rating / info.views;
-        console.log(info);
         res.json(info);
     })
 
