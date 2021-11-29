@@ -149,13 +149,13 @@ async function handleFormSubmit(e) {
 
     // if (response.ok) {
         let res = await response.json()         //Что-то делаем с ответом сервера?
-        console.dir(res);
+        // console.dir(res);      
         this.isVisit = true;
         localStorage.setItem('isVisit', true);
         name = "";
         mail = "";
         mess = "";
-        // location.reload();
+        location.reload();
         // const form = document.querySelector('.form-wrap');               //  Затирание формы без перезагрузки страницы
         // form.querySelector('.guest-wrap').style.display = 'none';
         // form.querySelector('.social').style.display = 'none';
