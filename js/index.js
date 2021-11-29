@@ -154,6 +154,9 @@ async function handleFormSubmit(e) {
         mail = "";
         mess = "";
         location.reload();
+        // const form = document.querySelector('.form-wrap');               //  Затирание формы без перезагрузки страницы
+        // form.querySelector('.guest-wrap').style.display = 'none';
+        // form.querySelector('.social').style.display = 'none';
 
     // }
     // else alert("Нет соединения с сервером...");
