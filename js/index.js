@@ -146,7 +146,7 @@ async function handleFormSubmit(e) {
         body: JSON.stringify(data)
     });
 
-    if (response.ok) {
+    // if (response.ok) {
         // let res = await response.json()         Что-то делаем с ответом сервера?
         this.isVisit = true;
         localStorage.setItem('isVisit', true);
@@ -155,8 +155,8 @@ async function handleFormSubmit(e) {
         mess = "";
         location.reload();
 
-    }
-    else alert("Нет соединения с сервером...");
+    // }
+    // else alert("Нет соединения с сервером...");
 
 }
 
