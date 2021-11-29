@@ -8,6 +8,7 @@ const api_http = {
     sendRating: 'https://test.neiros.ru/api/comments/sendRaiting'
 }
 
+let pageId;
 
 function addLinks() {
 
@@ -123,7 +124,7 @@ async function handleFormSubmit(e) {
 
     let data = {
         widget_id: CBU_GLOBAL.config.widget.tip_33.widget_id,
-        page_id: 1,
+        page_id: pageId,
         neiros_visit: neiros_visit,
         message: "",
         name: "",
@@ -147,13 +148,14 @@ async function handleFormSubmit(e) {
     });
 
     // if (response.ok) {
-        // let res = await response.json()         Что-то делаем с ответом сервера?
+        let res = await response.json()         //Что-то делаем с ответом сервера?
+        console.dir(res);
         this.isVisit = true;
         localStorage.setItem('isVisit', true);
         name = "";
         mail = "";
         mess = "";
-        location.reload();
+        // location.reload();
         // const form = document.querySelector('.form-wrap');               //  Затирание формы без перезагрузки страницы
         // form.querySelector('.guest-wrap').style.display = 'none';
         // form.querySelector('.social').style.display = 'none';
@@ -387,6 +389,7 @@ window.onload = async () => {
     });
     if (response.ok) {
         let result = await response.json();
+        pageId = result.page_id;
         initElements(result);
         initRaiting(result.rating);
         getMessage();
